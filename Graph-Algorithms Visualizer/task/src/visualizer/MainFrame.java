@@ -2,10 +2,9 @@ package visualizer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseListener;
 
 public class MainFrame extends JFrame {
-    private final Graph graph = new Graph(this, null, "Graph");
+    private final Graph graph = new Graph(null, "Graph");
 
 
     public MainFrame() {
@@ -24,12 +23,16 @@ public class MainFrame extends JFrame {
 
     void initComponents() {
         addGraph();
+        addMenuBar();
     }
-
 
     void addGraph() {
         graph.setBackground(Color.BLACK);
         add(graph);
+    }
+
+    void addMenuBar() {
+        new DefaultMenuBar(this, graph);
     }
 
     /*
