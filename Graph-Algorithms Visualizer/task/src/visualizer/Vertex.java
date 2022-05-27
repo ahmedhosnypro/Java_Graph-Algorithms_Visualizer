@@ -6,27 +6,24 @@ import java.awt.*;
 public class Vertex extends JPanel {
     private static final int SIZE = 50;
     private final JLabel label = new JLabel();
+    // private final int diffX = 734;  // for corner vertices apply x = (i % 2) * diffX
+    // private final int diffY = 511;   // for corner vertices apply y = (i / 2) * diffY
 
-
-    public Vertex(String vertexName, String labelName, String labelText, int i) {
-        super.setName(vertexName);
+    public Vertex(int x, int y, char id) {
+        super.setName("Vertex " + id);
         setLayout(new GridBagLayout());
-        setBackground(Color.BLACK);
-        int diffX = 734;
-        int diffY = 511;
-        setBounds((i % 2) * diffX, (i / 2) * diffY, SIZE, SIZE);
+        setBounds(x, y, SIZE, SIZE);
 
-        label.setName(labelName);
-        label.setText(labelText);
+
+        label.setName("VertexLabel " + id);
+        label.setText(String.valueOf(id));
         label.setFont(new Font("SansSerif", Font.BOLD, 40));
         label.setForeground(Color.BLACK);
-
         add(label);
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g);
         g.setColor(Color.WHITE);
         g.fillOval(0, 0, SIZE, SIZE);
     }

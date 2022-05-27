@@ -2,9 +2,11 @@ package visualizer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseListener;
 
 public class MainFrame extends JFrame {
-    private final JPanel graph = new JPanel(null);
+    private final Graph graph = new Graph(this, null, "Graph");
+
 
     public MainFrame() {
         setTitle("Graph-Algorithms Visualizer");
@@ -26,16 +28,17 @@ public class MainFrame extends JFrame {
 
 
     void addGraph() {
-        graph.setName("Graph");
         graph.setBackground(Color.BLACK);
-        createCornerVertices();
         add(graph);
     }
 
+    /*
+    ** stage 1
     void createCornerVertices() {
         for (int i = 0; i < 4; i++) {
             Vertex vertex = new Vertex("Vertex " + i, "VertexLabel " + i, String.valueOf(i), i);
             graph.add(vertex);
         }
     }
+    */
 }

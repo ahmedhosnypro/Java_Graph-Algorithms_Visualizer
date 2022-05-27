@@ -27,6 +27,90 @@ files:
         }
     }
   learner_created: false
+- name: src/visualizer/Graph.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+    import java.awt.*;
+    import java.awt.event.MouseEvent;
+    import java.awt.event.MouseListener;
+
+    public class Graph extends JPanel implements MouseListener {
+
+        public Graph(LayoutManager layout, String name) {
+            super(layout);
+            setName(name);
+        }
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+
+        }
+
+        @Override
+        public void mousePressed(MouseEvent e) {
+            //
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent e) {
+            //
+        }
+
+        @Override
+        public void mouseEntered(MouseEvent e) {
+            //
+        }
+
+        @Override
+        public void mouseExited(MouseEvent e) {
+            //
+        }
+    }
+  learner_created: true
+- name: src/visualizer/Vertex.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+    import java.awt.*;
+
+    public class Vertex extends JPanel {
+        private static final int SIZE = 50;
+        private final JLabel label = new JLabel();
+
+
+        public Vertex(String vertexName, String labelName, String labelText, int i) {
+            super.setName(vertexName);
+            setLayout(new GridBagLayout());
+            setBackground(Color.BLACK);
+            int diffX = 734;
+            int diffY = 511;
+            setBounds((i % 2) * diffX, (i / 2) * diffY, SIZE, SIZE);
+
+            label.setName(labelName);
+            label.setText(labelText);
+            label.setFont(new Font("SansSerif", Font.BOLD, 40));
+            label.setForeground(Color.BLACK);
+
+            add(label);
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            super.paintComponent(g);
+            g.setColor(Color.WHITE);
+            g.fillOval(0, 0, SIZE, SIZE);
+        }
+
+        void setLabelText(String labelText) {
+            label.setText(labelText);
+        }
+    }
+  learner_created: true
 - name: test/ClickToVertexTests.java
   visible: false
   text: |
@@ -321,6 +405,14 @@ files:
         }
     }
   learner_created: false
+- name: src/visualizer/VertexCreator.java
+  visible: true
+  text: "package visualizer;\n\npublic class VertextCreator {\n    static Vertex createVertex(int\
+    \ x, int y, int width, int height) {\n        return \n    }\n}\n"
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/15625#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Fri, 27 May 2022 12:04:41 UTC
 record: -1
