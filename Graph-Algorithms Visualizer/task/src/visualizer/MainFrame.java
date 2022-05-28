@@ -8,9 +8,10 @@ public class MainFrame extends JFrame {
     private static final int HEIGHT = 600;
     Mode mode = Mode.ADD_VERTEX;
     private static final String CURRENT_MODE = "Current Mode -> ";
-    private final UndirectedGraph graph = new UndirectedGraph(this, null, "Graph");
+    private UndirectedGraph graph = new UndirectedGraph(this, null, "Graph");
     private final JLabel modeLabel = new JLabel(CURRENT_MODE + mode.getName());
     private static final float TEXT_SIZE_PERCENT = 7.6f;
+
     public MainFrame() {
         setTitle("Graph-Algorithms Visualizer");
         setName("Graph-Algorithms Visualizer");
@@ -25,14 +26,17 @@ public class MainFrame extends JFrame {
 
         setVisible(true);
     }
+
     void initComponents() {
         addModeLabel();
         add(graph);
         addMenuBar();
     }
+
     void addMenuBar() {
         new DefaultMenuBar(this);
     }
+
     private void addModeLabel() {
         modeLabel.setName("Mode");
         add(modeLabel);
@@ -42,6 +46,7 @@ public class MainFrame extends JFrame {
                 0, (int) (modeLabel.getText().length() * TEXT_SIZE_PERCENT), 50);
         add(modeLabel);
     }
+
     void setMode(Mode graphMode) {
         UndirectedEdgeCreator.reset();
         graph.whiteVertices();
@@ -51,11 +56,16 @@ public class MainFrame extends JFrame {
                 0, (int) (modeLabel.getText().length() * TEXT_SIZE_PERCENT), 50);
         repaint();
     }
+
     Mode getMode() {
         return mode;
     }
 
     public UndirectedGraph getGraph() {
         return graph;
+    }
+
+    public void setGraph(UndirectedGraph graph) {
+        this.graph = graph;
     }
 }

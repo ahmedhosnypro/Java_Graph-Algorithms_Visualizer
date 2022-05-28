@@ -6,7 +6,6 @@ import org.assertj.swing.fixture.JMenuItemFixture;
 import org.assertj.swing.fixture.JOptionPaneFixture;
 import org.assertj.swing.fixture.JPanelFixture;
 import org.hyperskill.hstest.dynamic.DynamicTest;
-import org.hyperskill.hstest.dynamic.DynamicTest;
 import org.hyperskill.hstest.exception.outcomes.WrongAnswer;
 import org.hyperskill.hstest.stage.SwingTest;
 import org.hyperskill.hstest.testcase.CheckResult;
@@ -15,6 +14,8 @@ import visualizer.MainFrame;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -23,8 +24,96 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hyperskill.hstest.testcase.CheckResult.correct;
 import static org.hyperskill.hstest.testcase.CheckResult.wrong;
 
+class Vertex {
+    private final String id;
+    private final Point point;
+
+    Vertex(String id, Point point) {
+        this.id = id;
+        this.point = point;
+    }
+
+    public static Vertex of(String id) {
+        return new Vertex(id, null);
+    }
+
+    public Point point() {
+        return point;
+    }
+
+    public String id() {
+        return id;
+    }
+
+    public String name() {
+        return "Vertex " + id;
+    }
+
+    public String labelName() {
+        return "VertexLabel " + id;
+    }
+}
+
+class Edge {
+    private final String from;
+    private final String to;
+    private final int weight;
+
+    public Edge(String from, String to, int weight) {
+        this.from = from;
+        this.to = to;
+        this.weight = weight;
+    }
+
+    public static Edge of(String from, String to) {
+        return new Edge(from, to, 0);
+    }
+
+    public String from() {
+        return from;
+    }
+
+    public String to() {
+        return to;
+    }
+
+    public int weight() {
+        return weight;
+    }
+
+    public String name() {
+        return "Edge <" + from + " -> " + to + ">";
+    }
+
+    public String labelName() {
+        return "EdgeLabel <" + from + " -> " + to + ">";
+    }
+
+    public Edge opposite() {
+        return new Edge(this.to, this.from, this.weight);
+    }
+}
+
+enum ComponentType {
+    VERTEX("Vertex "),
+    EDGE("Edge "),
+    EDGE_LABEL("EdgeLabel "),
+    VERTEX_LABEL("VertexLabel "),
+    ANY("");
+
+    private final String prefix;
+
+    ComponentType(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public String prefix() {
+        return prefix;
+    }
+}
+
 @SuppressWarnings("unused")
-public class ConnectingTheDotsTests extends SwingTest {
+public class RemovingVerticesAndEdgesTests extends SwingTest {
 
     @SwingComponent(name = "Graph")
     private JPanelFixture graph;
@@ -38,106 +127,30 @@ public class ConnectingTheDotsTests extends SwingTest {
     @SwingComponent(name = "Add an Edge")
     private JMenuItemFixture addAnEdgeMode;
 
+    @SwingComponent(name = "Remove a Vertex")
+    private JMenuItemFixture removeAVertexMode;
+
+    @SwingComponent(name = "Remove an Edge")
+    private JMenuItemFixture removeAnEdgeMode;
+
+    @SwingComponent(name = "New")
+    private JMenuItemFixture newMenuItem;
+
+    @SwingComponent(name = "Exit")
+    private JMenuItemFixture exitMenuItem;
+
     @SwingComponent(name = "None")
     private JMenuItemFixture noneMode;
 
-    public ConnectingTheDotsTests() {
+    public RemovingVerticesAndEdgesTests() {
         super(new MainFrame());
-    }
-
-    private final static class Vertex {
-        private final String id;
-        private final Point point;
-
-        private Vertex(String id, Point point) {
-            this.id = id;
-            this.point = point;
-        }
-
-        public static Vertex of(String id) {
-            return new Vertex(id, null);
-        }
-
-        public Point point() {
-            return point;
-        }
-
-        public String id() {
-            return id;
-        }
-
-        public String name() {
-            return "Vertex " + id;
-        }
-
-        public String labelName() {
-            return "VertexLabel " + id;
-        }
-    }
-
-    private final static class Edge {
-        private final String from;
-        private final String to;
-        private final int weight;
-
-        public Edge(String from, String to, int weight) {
-            this.from = from;
-            this.to = to;
-            this.weight = weight;
-        }
-
-        public static Edge of(String from, String to) {
-            return new Edge(from, to, 0);
-        }
-
-        public String from() {
-            return from;
-        }
-
-        public String to() {
-            return to;
-        }
-
-        public int weight() {
-            return weight;
-        }
-
-        public String name() {
-            return "Edge <" + from + " -> " + to + ">";
-        }
-
-        public String labelName() {
-            return "EdgeLabel <" + from + " -> " + to + ">";
-        }
-
-        public Edge opposite() {
-            return new Edge(this.to, this.from, this.weight);
-        }
-    }
-
-    private enum ComponentType {
-        VERTEX("Vertex "),
-        EDGE("Edge "),
-        EDGE_LABEL("EdgeLabel "),
-        VERTEX_LABEL("VertexLabel "),
-        ANY("");
-
-        private final String prefix;
-
-        ComponentType(String prefix) {
-            this.prefix = prefix;
-        }
-
-        public String prefix() {
-            return prefix;
-        }
     }
 
     @DynamicTest(order = 1, feedback = "Title should be \"Graph-Algorithms Visualizer\"")
     CheckResult isCorrectFrameTitle() {
 
         assertThat(frame.getTitle())
-                .containsIgnoringCase("Graph-Algorithms Visualizer");
+            .containsIgnoringCase("Graph-Algorithms Visualizer");
 
         return correct();
     }
@@ -148,9 +161,9 @@ public class ConnectingTheDotsTests extends SwingTest {
         Dimension size = frame.getSize();
 
         assertThat(size.getWidth())
-                .isEqualTo(800);
+            .isEqualTo(800);
         assertThat(size.getHeight())
-                .isEqualTo(600);
+            .isEqualTo(600);
 
         return correct();
     }
@@ -158,7 +171,7 @@ public class ConnectingTheDotsTests extends SwingTest {
     @DynamicTest(order = 3, feedback = "Initially graph panel should not contain anything.")
     CheckResult isEmptyGraph() {
         assertThat(count(ComponentType.ANY))
-                .isEqualTo(0);
+            .isEqualTo(0);
         return correct();
     }
 
@@ -168,37 +181,44 @@ public class ConnectingTheDotsTests extends SwingTest {
         return correct();
     }
 
+
     @DynamicTest(order = 5, feedback = "Mode text should change after switching modes")
     CheckResult isModeSwitchFunctioning() {
+
+        addAVertexMode.click();
+        modeText.requireText(Pattern.compile(".*add a vertex.*", Pattern.CASE_INSENSITIVE));
+
+        removeAVertexMode.click();
+        modeText.requireText(Pattern.compile(".*remove a vertex.*", Pattern.CASE_INSENSITIVE));
 
         addAnEdgeMode.click();
         modeText.requireText(Pattern.compile(".*add an edge.*", Pattern.CASE_INSENSITIVE));
 
+        removeAnEdgeMode.click();
+        modeText.requireText(Pattern.compile(".*remove an edge.*", Pattern.CASE_INSENSITIVE));
+
         noneMode.click();
         modeText.requireText(Pattern.compile(".*none.*", Pattern.CASE_INSENSITIVE));
-
-        addAVertexMode.click();
-        modeText.requireText(Pattern.compile(".*add a vertex.*", Pattern.CASE_INSENSITIVE));
 
         return correct();
     }
 
     private final Vertex[] vertices = new Vertex[]{
-            new Vertex("A", new Point(100, 200)),
-            new Vertex("B", new Point(400, 300)),
-            new Vertex("C", new Point(300, 400)),
-            new Vertex("D", new Point(200, 100)),
-            new Vertex("E", new Point(700, 200)),
-            new Vertex("F", new Point(700, 100))
+        new Vertex("A", new Point(100, 200)),
+        new Vertex("B", new Point(400, 300)),
+        new Vertex("C", new Point(300, 400)),
+        new Vertex("D", new Point(200, 100)),
+        new Vertex("E", new Point(700, 200)),
+        new Vertex("F", new Point(700, 100))
     };
 
-    @DynamicTest(order = 5)
+    @DynamicTest(order = 6)
     CheckResult changeModeToAddAVertex() {
         addAVertexMode.click();
         return correct();
     }
 
-    @DynamicTest(order = 6, feedback = "Could not insert vertex", data = "vertices")
+    @DynamicTest(order = 7, feedback = "Could not insert vertex", data = "vertices")
     CheckResult insertVertex(Vertex vertex) {
 
         getWindow().robot().click(graph.target(), vertex.point());
@@ -207,9 +227,9 @@ public class ConnectingTheDotsTests extends SwingTest {
         try {
 
             jOptionPaneFixture = JOptionPaneFinder
-                    .findOptionPane()
-                    .withTimeout(200)
-                    .using(getWindow().robot());
+                .findOptionPane()
+                .withTimeout(200)
+                .using(getWindow().robot());
 
         } catch (WaitTimedOutError e) {
             return wrong("Timeout waiting for a dialog box to open");
@@ -251,28 +271,28 @@ public class ConnectingTheDotsTests extends SwingTest {
         try {
 
             jOptionPaneFixture
-                    .textBox()
-                    .setText(vertex.id());
+                .textBox()
+                .setText(vertex.id());
 
             jOptionPaneFixture
-                    .textBox()
-                    .requireText(vertex.id());
+                .textBox()
+                .requireText(vertex.id());
         } catch (Exception e) {
             return wrong("Cannot write text '" + vertex.id() + "' in dialog box / Incorrect text after writing. Expected: '" + vertex.id() + "'");
         }
 
         JOptionPaneFinder
-                .findOptionPane()
-                .using(getWindow().robot())
-                .okButton()
-                .click();
+            .findOptionPane()
+            .using(getWindow().robot())
+            .okButton()
+            .click();
 
         try {
 
             JOptionPaneFinder
-                    .findOptionPane()
-                    .withTimeout(200)
-                    .using(getWindow().robot());
+                .findOptionPane()
+                .withTimeout(200)
+                .using(getWindow().robot());
 
             return wrong("Dialog box did not disappear after clicking ok");
         } catch (WaitTimedOutError ignored) {
@@ -326,23 +346,23 @@ public class ConnectingTheDotsTests extends SwingTest {
     }
 
     private final Edge[] edges = new Edge[]{
-            new Edge("D", "B", 1),
-            new Edge("A", "B", 1),
-            new Edge("C", "A", 2),
-            new Edge("A", "D", 3),
-            new Edge("B", "C", 4),
-            new Edge("C", "D", 6),
-            new Edge("B", "F", 5),
-            new Edge("C", "E", -1)
+        new Edge("D", "B", 1),
+        new Edge("A", "B", 1),
+        new Edge("C", "A", 2),
+        new Edge("A", "D", 3),
+        new Edge("B", "C", 4),
+        new Edge("C", "D", 6),
+        new Edge("B", "F", 5),
+        new Edge("C", "E", -1)
     };
 
-    @DynamicTest(order = 9)
+    @DynamicTest(order = 8)
     CheckResult changeModeToAddAnEdge() {
         addAnEdgeMode.click();
         return correct();
     }
 
-    @DynamicTest(order = 10, data = "edges", feedback = "Could not insert edges")
+    @DynamicTest(order = 9, data = "edges", feedback = "Could not insert edges")
     CheckResult insertEdge(Edge edge) {
 
 
@@ -353,9 +373,9 @@ public class ConnectingTheDotsTests extends SwingTest {
 
         try {
             jOptionPaneFixture = JOptionPaneFinder
-                    .findOptionPane()
-                    .withTimeout(1000)
-                    .using(getWindow().robot());
+                .findOptionPane()
+                .withTimeout(1000)
+                .using(getWindow().robot());
         } catch (WaitTimedOutError e) {
             return wrong("Clicking on two vertices in the \"Add an Edge\" mode; a new window must pop up prompting for edge weight");
         }
@@ -380,33 +400,33 @@ public class ConnectingTheDotsTests extends SwingTest {
 
         try {
             jOptionPaneFixture
-                    .textBox()
-                    .setText(edge.weight() + "");
+                .textBox()
+                .setText(edge.weight() + "");
 
             jOptionPaneFixture
-                    .textBox()
-                    .requireText(edge.weight() + "");
+                .textBox()
+                .requireText(edge.weight() + "");
         } catch (Exception e) {
             return wrong("Could not enter text in the edge weight prompting dialog box.");
         }
 
         jOptionPaneFixture
-                .okButton()
-                .click();
+            .okButton()
+            .click();
 
         try {
             JOptionPaneFinder
-                    .findOptionPane()
-                    .withTimeout(1000)
-                    .using(getWindow().robot());
+                .findOptionPane()
+                .withTimeout(1000)
+                .using(getWindow().robot());
 
             return wrong("Dialog box must close after clicking on ok button.");
         } catch (WaitTimedOutError ignored) {
         }
 
-        Component aTob = getEdge(edge.from(), edge.to()).orElseThrow(() -> new WrongAnswer("\"" + edge.name() + "\" was not found!"));
+        Component aTob = getEdge(edge.from(), edge.to()).orElseThrow(() -> new WrongAnswer("\"" + edge.labelName() + "\" was not found!"));
 
-        Component bToa = getEdge(edge.to(), edge.from()).orElseThrow(() -> new WrongAnswer("\"" + edge.opposite().name() + "\" was not found!"));
+        Component bToa = getEdge(edge.to(), edge.from()).orElseThrow(() -> new WrongAnswer("\"" + edge.opposite().labelName() + "\" was not found!"));
 
         Component label = getEdgeLabel(edge.from(), edge.to()).orElseThrow(() -> new WrongAnswer("Edge Label which should contain the edge weight was not found in graph."));
 
@@ -422,8 +442,8 @@ public class ConnectingTheDotsTests extends SwingTest {
 
         try {
             assertThat(((JLabel) label).getText())
-                    .containsIgnoringCase(edge.weight() + "");
-        } catch (AssertionError e) {
+                .containsIgnoringCase(edge.weight() + "");
+        } catch (Exception e) {
             return wrong("Edge Label should hold the weight of the respective edge");
         }
 
@@ -432,7 +452,7 @@ public class ConnectingTheDotsTests extends SwingTest {
 
     private final String[] incorrectWeights = new String[]{"", " ", "  ", "A", "BC", "!", "Cancel"};
 
-    @DynamicTest(order = 11, data = "incorrectWeights")
+    @DynamicTest(order = 10, data = "incorrectWeights")
     CheckResult incorrectEdgeWeights(String weight) {
 
         getWindow().robot().click(getVertex("D").orElseThrow());
@@ -440,9 +460,9 @@ public class ConnectingTheDotsTests extends SwingTest {
 
         try {
             JOptionPaneFixture jOptionPaneFixture = JOptionPaneFinder
-                    .findOptionPane()
-                    .withTimeout(1000)
-                    .using(getWindow().robot());
+                .findOptionPane()
+                .withTimeout(1000)
+                .using(getWindow().robot());
             jOptionPaneFixture.textBox().setText(weight);
             if (!weight.equals("Cancel"))
                 jOptionPaneFixture.okButton().click();
@@ -451,9 +471,9 @@ public class ConnectingTheDotsTests extends SwingTest {
 
             if (!weight.equals("Cancel"))
                 JOptionPaneFinder
-                        .findOptionPane()
-                        .withTimeout(1000)
-                        .using(getWindow().robot());
+                    .findOptionPane()
+                    .withTimeout(1000)
+                    .using(getWindow().robot());
 
             return correct();
         } catch (WaitTimedOutError e) {
@@ -461,7 +481,7 @@ public class ConnectingTheDotsTests extends SwingTest {
         }
     }
 
-    @DynamicTest(order = 12)
+    @DynamicTest(order = 11)
     CheckResult vertexInsertionInIncorrectMode() {
 
         changeModeToAddAnEdge();
@@ -469,9 +489,9 @@ public class ConnectingTheDotsTests extends SwingTest {
 
         try {
             JOptionPaneFinder
-                    .findOptionPane()
-                    .withTimeout(1000)
-                    .using(getWindow().robot());
+                .findOptionPane()
+                .withTimeout(1000)
+                .using(getWindow().robot());
             return wrong("Vertex should not be inserted in other modes");
         } catch (WaitTimedOutError e) {
             return correct();
@@ -480,7 +500,7 @@ public class ConnectingTheDotsTests extends SwingTest {
         }
     }
 
-    @DynamicTest(order = 13)
+    @DynamicTest(order = 12)
     CheckResult edgeInsertionInIncorrectMode() {
 
         changeModeToAddAVertex();
@@ -489,9 +509,9 @@ public class ConnectingTheDotsTests extends SwingTest {
 
         try {
             JOptionPaneFinder
-                    .findOptionPane()
-                    .withTimeout(1000)
-                    .using(getWindow().robot());
+                .findOptionPane()
+                .withTimeout(1000)
+                .using(getWindow().robot());
             return wrong("Edge should not be inserted in other modes");
         } catch (WaitTimedOutError e) {
             return correct();
@@ -500,7 +520,7 @@ public class ConnectingTheDotsTests extends SwingTest {
         }
     }
 
-    @DynamicTest(order = 14)
+    @DynamicTest(order = 13)
     CheckResult checkVertexCount() {
         int got = count(ComponentType.VERTEX);
         int expected = vertices.length;
@@ -509,7 +529,7 @@ public class ConnectingTheDotsTests extends SwingTest {
         return correct();
     }
 
-    @DynamicTest(order = 15)
+    @DynamicTest(order = 14)
     CheckResult checkEdgeCount() {
         int got = count(ComponentType.EDGE);
         int expected = edges.length * 2;
@@ -518,7 +538,7 @@ public class ConnectingTheDotsTests extends SwingTest {
         return correct();
     }
 
-    @DynamicTest(order = 16)
+    @DynamicTest(order = 15)
     CheckResult checkVertexLabelCount() {
         int got = count(ComponentType.VERTEX_LABEL);
         int expected = vertices.length;
@@ -527,7 +547,7 @@ public class ConnectingTheDotsTests extends SwingTest {
         return correct();
     }
 
-    @DynamicTest(order = 17)
+    @DynamicTest(order = 16)
     CheckResult checkEdgeLabelCount() {
         int got = count(ComponentType.EDGE_LABEL);
         int expected = edges.length;
@@ -536,20 +556,129 @@ public class ConnectingTheDotsTests extends SwingTest {
         return correct();
     }
 
+    @DynamicTest(order = 17)
+    CheckResult switchToRemoveAnEdgeMode() {
+        removeAnEdgeMode.click();
+        return correct();
+    }
+
+    private final String[][] toBeRemovedEdges = new String[][]{
+        new String[]{"B", "F"},
+        new String[]{"C", "E"}
+    };
+
+    @DynamicTest(order = 18, data = "toBeRemovedEdges", feedback = "Could not remove Edge")
+    CheckResult removeEdge(String from, String to) {
+
+        getWindow().robot().click(getEdge(from, to).orElseThrow());
+
+        if (getEdge(from, to).isPresent()) {
+            throw new WrongAnswer(Edge.of(from, to).name() + " is present in graph even after removing");
+        }
+
+        if (getEdge(to, from).isPresent()) {
+            throw new WrongAnswer(Edge.of(to, from).name() + " is present in graph even after removing");
+        }
+
+        if (getEdgeLabel(from, to).isPresent()) {
+            throw new WrongAnswer(Edge.of(from, to).labelName() + " is present in graph even after removing");
+        }
+
+        return correct();
+    }
+
+    @DynamicTest(order = 19)
+    CheckResult switchToRemoveAVertexMode() {
+        removeAVertexMode.click();
+        return correct();
+    }
+
+    private final String[] toBeRemovedVertices = new String[]{"F", "E", "B", "C"};
+
+    @DynamicTest(order = 20, data = "toBeRemovedVertices", feedback = "Could not remove Vertex")
+    CheckResult removeVertex(String id) {
+
+        getWindow().robot().click(getVertex(id).orElseThrow());
+
+        if (getVertex(id).isPresent()) {
+            throw new WrongAnswer(Vertex.of(id).name() + " is present in graph even after removing");
+        }
+
+        if (getVertexLabel(id).isPresent()) {
+            throw new WrongAnswer(Vertex.of(id).labelName() + " is present in graph even after removing");
+        }
+
+        int adjEdgesCount = getInOrOutEdgesCount(id);
+        if (adjEdgesCount != 0) {
+            throw new WrongAnswer("All inward and outward edges of the vertex should be removed after removing the vertex itself. Found = " + adjEdgesCount);
+        }
+
+        return correct();
+    }
+
+    @DynamicTest(order = 21)
+    CheckResult removeVertexInOtherModes() {
+        for (var mode : List.of(addAVertexMode, addAnEdgeMode, removeAnEdgeMode, noneMode)) {
+            mode.click();
+            try {
+                removeVertex("A");
+                return wrong("Removed Vertex in wrong mode : " + mode.target().getName());
+            } catch (Throwable ignored) {}
+        }
+        return correct();
+    }
+
+    @DynamicTest(order = 22)
+    CheckResult removeEdgeInOtherModes() {
+        for (var mode : List.of(addAVertexMode, addAnEdgeMode, removeAVertexMode, noneMode)) {
+            mode.click();
+            try {
+                removeEdge("A", "D");
+                return wrong("Removed Edge in wrong mode : " + mode.target().getName());
+            } catch (Throwable ignored) {}
+        }
+        return correct();
+    }
+
+    @DynamicTest(order = 23)
+    CheckResult checkNewMenuItem() {
+        newMenuItem.click();
+
+        if (count(ComponentType.ANY) != 0) {
+            return wrong("Clicking on \"New\" menu should clear out the entire graph.");
+        }
+
+        return correct();
+    }
+
+    private int getInOrOutEdgesCount(String id) {
+        List<Component> components = new ArrayList<>();
+        for (var c : getAllComponents(graph.target())) {
+            if (c.getName() != null && (
+                c.getName().startsWith("Edge <" + id + " -> ") ||
+                    c.getName().startsWith("EdgeLabel <" + id + " -> ") ||
+                    c.getName().endsWith(" -> " + id + ">")
+            )) {
+                components.add(c);
+            }
+        }
+        return components.size();
+    }
+
     private int count(ComponentType type) {
         return (int) getAllComponents(graph.target())
-                .stream()
-                .filter(it -> it.getName() != null && it.getName().startsWith(type.prefix()))
-                .count();
+            .stream()
+            .filter(it -> it.getName() != null && it.getName().startsWith(type.prefix()))
+            .count();
     }
 
     private Optional<Component> getVertexLabel(String id) {
         String name = Vertex.of(id).labelName();
 
         return getAllComponents(graph.target())
-                .stream()
-                .filter(it -> Objects.equals(it.getName(), name))
-                .findFirst();
+            .stream()
+            .filter(it -> Objects.equals(it.getName(), name))
+            .findFirst();
 
     }
 
@@ -557,9 +686,9 @@ public class ConnectingTheDotsTests extends SwingTest {
         String name = Edge.of(from, to).labelName();
 
         return getAllComponents(graph.target())
-                .stream()
-                .filter(it -> Objects.equals(it.getName(), name))
-                .findFirst();
+            .stream()
+            .filter(it -> Objects.equals(it.getName(), name))
+            .findFirst();
 
     }
 
@@ -567,17 +696,17 @@ public class ConnectingTheDotsTests extends SwingTest {
         String name = Edge.of(from, to).name();
 
         return getAllComponents(graph.target())
-                .stream()
-                .filter(it -> Objects.equals(it.getName(), name))
-                .findFirst();
+            .stream()
+            .filter(it -> Objects.equals(it.getName(), name))
+            .findFirst();
     }
 
     private Optional<Component> getVertex(String id) {
         String name = Vertex.of(id).name();
 
         return getAllComponents(graph.target())
-                .stream()
-                .filter(it -> Objects.equals(name, it.getName()))
-                .findFirst();
+            .stream()
+            .filter(it -> Objects.equals(name, it.getName()))
+            .findFirst();
     }
 }

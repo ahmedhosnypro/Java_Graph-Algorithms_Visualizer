@@ -57,8 +57,9 @@ public class Vertex extends JPanel {
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
                 switch (mainFrame.getMode()) {
-                    case ADD_VERTEX, NONE_MODE -> highlight();
+                    case ADD_VERTEX, NONE_MODE, REMOVE_EDGE -> highlight();
                     case ADD_EDGE -> createEdge();
+                    case REMOVE_VERTEX -> removeVertex();
                 }
             }
         });
@@ -79,6 +80,10 @@ public class Vertex extends JPanel {
         mainFrame.getGraph().whiteVertices();
         color = Color.yellow;
         mainFrame.getGraph().repaint();
+    }
+
+    private void removeVertex() {
+        mainFrame.getGraph().removeVertex(this);
     }
 
     void connectVertex(Vertex vertex) {

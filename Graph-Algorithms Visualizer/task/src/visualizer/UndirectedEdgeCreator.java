@@ -24,8 +24,8 @@ public class UndirectedEdgeCreator {
             if (!isDuplicateEdge(undirectedEdges, vertex)) {
 
                 vertex.getMainFrame().getGraph()
-                        .addNewEdge(new UndirectedEdge(fstNode, vertex, weight),
-                                new UndirectedEdge(vertex, fstNode, weight));
+                        .addNewEdge(new UndirectedEdge(fstNode, vertex, weight, vertex.getMainFrame().getGraph()),
+                                new UndirectedEdge(vertex, fstNode, weight, vertex.getMainFrame().getGraph()));
                 fstNode = null;
             }
         }

@@ -5,10 +5,14 @@ import java.awt.event.KeyEvent;
 
 public class DefaultMenuBar extends JMenuBar {
     private final MainFrame mainFrame;
+    private final JMenu fileMenu = new JMenu("File");
     private final JMenu modeMenu = new JMenu("Mode");
     private final JMenuItem addVertex = new JMenuItem(Mode.ADD_VERTEX.getName());
     private final JMenuItem addEdge = new JMenuItem(Mode.ADD_EDGE.getName());
-    private final JMenuItem none = new JMenuItem(Mode.NONE_MODE.getName());
+    private final JMenuItem removeVertex = new JMenuItem(Mode.REMOVE_VERTEX.getName());
+    private final JMenuItem removeEdge = new JMenuItem(Mode.REMOVE_EDGE.getName());
+    private final JMenuItem newMenuItem = new JMenuItem("New");
+    private final JMenuItem noneModeMenuItem = new JMenuItem(Mode.NONE_MODE.getName());
     private final JMenuItem exit = new JMenuItem("Exit");
 
     DefaultMenuBar(MainFrame mainFrame) {
@@ -18,22 +22,41 @@ public class DefaultMenuBar extends JMenuBar {
     }
 
     void initComponents() {
+        fileMenu.setName("File");
+        add(fileMenu);
+
+        newMenuItem.setName("New");
+        newMenuItem.addActionListener(e -> mainFrame.getGraph().reset());
+
+        exit.setName("Exit");
+        exit.addActionListener(e -> System.exit(0));
+
+        fileMenu.add(newMenuItem);
+        fileMenu.addSeparator();
+        fileMenu.add(exit);
+
+        modeMenu.setName("Mode");
         modeMenu.setMnemonic(KeyEvent.VK_Q);
         add(modeMenu);
 
+
         addVertex.setName("Add a Vertex");
         addEdge.setName("Add an Edge");
-        none.setName("None");
+        removeVertex.setName("Remove a Vertex");
+        removeEdge.setName("Remove an Edge");
+        noneModeMenuItem.setName("None");
 
         addVertex.addActionListener(e -> mainFrame.setMode(Mode.ADD_VERTEX));
         addEdge.addActionListener(e -> mainFrame.setMode(Mode.ADD_EDGE));
-        none.addActionListener(e -> mainFrame.setMode(Mode.NONE_MODE));
-        exit.addActionListener(e -> System.exit(0));
+        removeVertex.addActionListener(e -> mainFrame.setMode(Mode.REMOVE_VERTEX));
+        removeEdge.addActionListener(e -> mainFrame.setMode(Mode.REMOVE_EDGE));
+        noneModeMenuItem.addActionListener(e -> mainFrame.setMode(Mode.NONE_MODE));
 
         modeMenu.add(addVertex);
         modeMenu.add(addEdge);
-        modeMenu.add(none);
-        modeMenu.addSeparator();
-        modeMenu.add(exit);
+        modeMenu.add(removeVertex);
+        modeMenu.add(removeEdge);
+        modeMenu.add(noneModeMenuItem);
+
     }
 }

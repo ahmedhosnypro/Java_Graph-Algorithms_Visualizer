@@ -28,6 +28,500 @@ files:
         }
     }
   learner_created: false
+- name: src/visualizer/DefaultMenuBar.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+    import java.awt.event.KeyEvent;
+
+    public class DefaultMenuBar extends JMenuBar {
+        private final MainFrame mainFrame;
+        private final JMenu modeMenu = new JMenu("Mode");
+        private final JMenuItem addVertex = new JMenuItem(Mode.ADD_VERTEX.getName());
+        private final JMenuItem addEdge = new JMenuItem(Mode.ADD_EDGE.getName());
+        private final JMenuItem none = new JMenuItem(Mode.NONE_MODE.getName());
+        private final JMenuItem exit = new JMenuItem("Exit");
+
+        DefaultMenuBar(MainFrame mainFrame) {
+            mainFrame.setJMenuBar(this);
+            this.mainFrame = mainFrame;
+            initComponents();
+        }
+
+        void initComponents() {
+            modeMenu.setMnemonic(KeyEvent.VK_Q);
+            add(modeMenu);
+
+            addVertex.setName("Add a Vertex");
+            addEdge.setName("Add an Edge");
+            none.setName("None");
+
+            addVertex.addActionListener(e -> mainFrame.setMode(Mode.ADD_VERTEX));
+            addEdge.addActionListener(e -> mainFrame.setMode(Mode.ADD_EDGE));
+            none.addActionListener(e -> mainFrame.setMode(Mode.NONE_MODE));
+            exit.addActionListener(e -> System.exit(0));
+
+            modeMenu.add(addVertex);
+            modeMenu.add(addEdge);
+            modeMenu.add(none);
+            modeMenu.addSeparator();
+            modeMenu.add(exit);
+        }
+    }
+  learner_created: true
+- name: src/visualizer/UndirectedEdge.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+    import java.awt.*;
+
+    public class UndirectedEdge extends JComponent {
+        private Vertex[] nodes = new Vertex[2];
+        private int weight;
+        private JLabel weightLabel = new JLabel();
+
+        public UndirectedEdge( Vertex fstNode, Vertex sndNode, int weight) {
+            nodes[0] = fstNode;
+            nodes[1] = sndNode;
+            this.weight = weight;
+
+            setName(String.format("Edge <%c -> %c>", fstNode.getId(), sndNode.getId()));
+
+            weightLabel.setFont(new Font("Arial", Font.BOLD, 20));
+            weightLabel.setForeground(Color.RED);
+            weightLabel.setText(String.valueOf(weight));
+            weightLabel.setName(String.format("EdgeLabel <%c -> %c>", fstNode.getId(), sndNode.getId()));
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            super.paint(g);
+
+            g.setColor(Color.WHITE);
+            g.setFont(new Font("Arial", Font.BOLD, 5));
+            g.drawLine(nodes[0].getX(), nodes[0].getY(), nodes[1].getX(), nodes[1].getY());
+        }
+
+        // getters
+
+        Vertex[] getNodes() {
+            return nodes;
+        }
+
+        int getWeight() {
+            return weight;
+        }
+
+        JLabel getWeightLabel() {
+            return weightLabel;
+        }
+    }
+  learner_created: true
+- name: src/visualizer/UndirectedEdgeCreator.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+
+    public class UndirectedEdgeCreator {
+        private static Vertex fstNode = null;
+        private static final String MESSAGE = "Enter Weight";
+        private static final String TITLE = "Input";
+
+        private UndirectedEdgeCreator() {
+        }
+
+        static void createUndirectedEdge(Vertex vertex) {
+            if (fstNode == null) {
+                fstNode = vertex;
+            } else if (fstNode != vertex) {
+                Integer weight = getWeight(vertex.getMainFrame().getGraph());
+                if (weight == null) {
+                    fstNode.getMainFrame().getGraph().whiteVertices();
+                    fstNode = null;
+                    return;
+                }
+                var undirectedEdges = vertex.getMainFrame().getGraph().getEdges();
+                if (!isDuplicateEdge(undirectedEdges, vertex)) {
+
+                    vertex.getMainFrame().getGraph()
+                            .addNewEdge(new UndirectedEdge(fstNode, vertex, weight),
+                                    new UndirectedEdge(vertex, fstNode, weight));
+                    fstNode = null;
+                }
+            }
+        }
+
+        private static Integer getWeight(UndirectedGraph graph) {
+            String input = JOptionPane.showInputDialog(graph, MESSAGE, TITLE, JOptionPane.QUESTION_MESSAGE);
+            if (input == null) {
+                return null;
+            }
+            if (isValidWeight(input)) {
+                return Integer.parseInt(input);
+            }
+            return getWeight(graph);
+        }
+
+
+        private static boolean isValidWeight(String input) {
+            try {
+                Integer.parseInt(input);
+                return true;
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+        }
+
+        private static boolean isDuplicateEdge(java.util.Set<UndirectedEdge> edges, Vertex sndNode) {
+            return edges.stream()
+                    .anyMatch(edge -> edge.getNodes()[0] == fstNode && edge.getNodes()[1] == sndNode);
+        }
+
+        public static void reset() {
+            fstNode = null;
+        }
+    }
+  learner_created: true
+- name: src/visualizer/Mode.java
+  visible: true
+  text: |
+    package visualizer;
+
+    public enum Mode {
+        ADD_VERTEX("Add a Vertex"),
+        ADD_EDGE("Add an Edge"),
+        NONE_MODE("None");
+
+        private final String name;
+
+        Mode(String mode) {
+            this.name = mode;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+  learner_created: true
+- name: src/visualizer/VertexCreator.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+
+    public class VertexCreator {
+        private static final String MESSAGE = "Enter the Vertex Id (should be 1 char";
+        private static final String TITLE = "Vertex";
+
+        private VertexCreator() {
+        }
+
+
+        static Vertex createVertex(MainFrame mainFrame, int x, int y) {
+            String input = JOptionPane.showInputDialog(mainFrame, MESSAGE, TITLE, JOptionPane.QUESTION_MESSAGE);
+            if (input == null) {
+                return null;
+            }
+            if (isValidId(input)) {
+                return new Vertex(mainFrame, x, y, input.charAt(0));
+            }
+            return createVertex(mainFrame, x, y);
+        }
+
+
+        private static boolean isValidId(String input) {
+            if (input.length() == 1) {
+                return input.matches("[A-Za-z\\d]");
+            }
+            return false;
+        }
+    }
+  learner_created: true
+- name: src/visualizer/Vertex.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+    import java.awt.*;
+    import java.awt.event.MouseAdapter;
+    import java.awt.event.MouseEvent;
+    import java.util.HashSet;
+    import java.util.Set;
+
+    public class Vertex extends JPanel {
+        private static final int DIFF_X = 25;
+        private static final int DIFF_Y = 25;
+        private static final int SIZE = 50;
+
+        private final MainFrame mainFrame;
+
+        private final JLabel label = new JLabel();
+
+        private final Set<Vertex> connectedVertices = new HashSet<>();
+
+        private int centerX;
+        private int centerY;
+        private char id;
+        private static final Color DEFAULT_COLOR = Color.WHITE;
+        private Color color = DEFAULT_COLOR;
+
+
+        // private final int diffX = 734;  // for corner vertices apply x = (i % 2) * diffX
+        // private final int diffY = 511;   // for corner vertices apply y = (i / 2) * diffY
+
+
+        public Vertex(MainFrame mainFrame, int x, int y, char id) {
+            this.mainFrame = mainFrame;
+            this.centerX = x - DIFF_X;
+            this.centerY = y - DIFF_Y;
+            this.id = id;
+
+            initComponents();
+            setActionEvents();
+        }
+
+        private void initComponents() {
+            setName("Vertex " + id);
+            setLayout(new GridBagLayout());
+            setBounds(centerX, centerY, SIZE, SIZE);
+
+            label.setName("VertexLabel " + id);
+            label.setText(String.valueOf(id));
+            label.setFont(new Font("SansSerif", Font.BOLD, 40));
+            label.setForeground(Color.BLACK);
+            add(label);
+        }
+
+        private void setActionEvents() {
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    switch (mainFrame.getMode()) {
+                        case ADD_VERTEX, NONE_MODE -> highlight();
+                        case ADD_EDGE -> createEdge();
+                    }
+                }
+            });
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            g.setColor(color);
+            g.fillOval(0, 0, SIZE, SIZE);
+        }
+
+        private void createEdge() {
+            highlight();
+            UndirectedEdgeCreator.createUndirectedEdge(Vertex.this);
+        }
+
+        private void highlight() {
+            mainFrame.getGraph().whiteVertices();
+            color = Color.yellow;
+            mainFrame.getGraph().repaint();
+        }
+
+        void connectVertex(Vertex vertex) {
+            connectedVertices.add(vertex);
+        }
+
+        void disconnectVertex(Vertex vertex) {
+            connectedVertices.removeIf(v -> v == vertex);
+        }
+
+        // setters
+        public void setX(int centerX) {
+            this.centerX = centerX;
+        }
+
+        public void setY(int centerY) {
+            this.centerY = centerY;
+        }
+
+        public void setId(char id) {
+            this.id = id;
+        }
+
+        void setLabel(String labelText) {
+            label.setText(labelText);
+        }
+
+        public void resetColor() {
+            this.color = DEFAULT_COLOR;
+        }
+
+        // getters
+        char getId() {
+            return id;
+        }
+
+        Set<Vertex> getConnectedVertices() {
+            return connectedVertices;
+        }
+
+        public int getCenterX() {
+            return centerX + DIFF_X;
+        }
+
+        public int getCenterY() {
+            return centerY + DIFF_Y;
+        }
+
+        public MainFrame getMainFrame() {
+            return mainFrame;
+        }
+    }
+  learner_created: true
+- name: src/visualizer/UndirectedGraph.java
+  visible: true
+  text: |-
+    package visualizer;
+
+    import javax.swing.*;
+    import java.awt.*;
+    import java.awt.event.MouseAdapter;
+    import java.awt.event.MouseEvent;
+    import java.util.HashSet;
+    import java.util.Set;
+
+    public class UndirectedGraph extends JPanel {
+        private final Set<Vertex> vertices = new HashSet<>();
+        private final Set<UndirectedEdge> edges = new HashSet<>();
+
+        private final Set<JLabel> weightLabels = new HashSet<>();
+
+        private final MainFrame mainFrame;
+
+        public UndirectedGraph(MainFrame mainFrame, LayoutManager layout, String name) {
+            this.mainFrame = mainFrame;
+            setLayout(layout);
+            setName(name);
+            setForeground(Color.RED);
+            setBackground(Color.BLACK);
+            setBounds(0, 0, 800, 600);
+
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    switch (mainFrame.getMode()) {
+                        case ADD_VERTEX -> createVertex(e);
+                        case ADD_EDGE -> {
+                            // To Do
+                        }
+                        case NONE_MODE -> whiteVertices();
+                    }
+                }
+            });
+        }
+
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            setupLabelPosition();
+            super.paintComponent(g);
+        }
+
+        @Override
+        protected void paintChildren(Graphics g) {
+
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setStroke(new BasicStroke(3));
+            g2.setColor(Color.WHITE);
+            for (var edge : edges) {
+                drawEdge(g2, edge);
+            }
+
+            super.paintChildren(g);
+        }
+
+        private void drawEdge(Graphics2D g2, UndirectedEdge edge) {
+            var nodes = edge.getNodes();
+            int x1 = nodes[0].getCenterX();
+            int y1 = nodes[0].getCenterY();
+            int x2 = nodes[1].getCenterX();
+            int y2 = nodes[1].getCenterY();
+
+            g2.drawLine(x1, y1, x2, y2);
+        }
+
+        private void setupLabelPosition() {
+            for (var edge : edges) {
+                var nodes = edge.getNodes();
+                int x1 = nodes[0].getCenterX();
+                int y1 = nodes[0].getCenterY();
+                int x2 = nodes[1].getCenterX();
+                int y2 = nodes[1].getCenterY();
+
+                int centerX = Math.min(x1, x2) + Math.abs(x1 - x2) / 2;
+                int centerY = Math.min(y1, y2) + Math.abs(y1 - y2) / 2;
+
+                int dist = 25;
+                int distSqr = dist * dist;
+                if (x1 - x2 != 0) {
+                    float slope = (float) (y1 - y2) / (x2 - x1);
+                    double slopeSqr = slope * slope;
+                    double diffX = Math.sqrt(distSqr / (1 + slopeSqr));
+                    double diffY = Math.sqrt(distSqr - distSqr / (1 + slopeSqr));
+
+                    centerX = (int) (centerX + diffX);
+                    centerY = (int) (centerY + diffY);
+                }
+                edge.getWeightLabel().setBounds(centerX, centerY, 30, 30);
+            }
+        }
+
+        private void createVertex(MouseEvent e) {
+            whiteVertices();
+            Vertex vertex = VertexCreator.createVertex(mainFrame, e.getX(), e.getY());
+            if (vertex != null) {
+                add(vertex);
+                vertices.add(vertex);
+                paintComponents(getGraphics());
+                mainFrame.repaint();
+            }
+        }
+
+        void whiteVertices() {
+            vertices.forEach(Vertex::resetColor);
+            mainFrame.repaint();
+        }
+
+        void addNewEdge(UndirectedEdge newEdge, UndirectedEdge stupidStageLogic) {
+            if (!isDuplicateEdge(newEdge)) {
+                edges.add(newEdge);
+                add(newEdge);
+                add(stupidStageLogic);
+
+                weightLabels.add(newEdge.getWeightLabel());
+                add(newEdge.getWeightLabel());
+
+                whiteVertices();
+                mainFrame.repaint();
+
+            }
+        }
+
+        private boolean isDuplicateEdge(UndirectedEdge newEdge) {
+            return edges.stream()
+                    .anyMatch(e -> e.getNodes()[0] == newEdge.getNodes()[0] && e.getNodes()[1] == newEdge.getNodes()[1]);
+        }
+
+        // getters
+        Set<UndirectedEdge> getEdges() {
+            return edges;
+        }
+    }
+  learner_created: true
 - name: test/RemovingVerticesAndEdgesTests.java
   visible: false
   text: |
@@ -745,5 +1239,8 @@ files:
     }
   learner_created: false
 feedback_link: https://hyperskill.org/learn/step/15627#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sat, 28 May 2022 14:34:16 UTC
 record: -1

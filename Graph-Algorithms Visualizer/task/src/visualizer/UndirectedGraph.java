@@ -13,7 +13,7 @@ public class UndirectedGraph extends JPanel {
 
     private final Set<JLabel> weightLabels = new HashSet<>();
 
-    private final MainFrame mainFrame;
+    final MainFrame mainFrame;
 
     public UndirectedGraph(MainFrame mainFrame, LayoutManager layout, String name) {
         this.mainFrame = mainFrame;
@@ -38,14 +38,6 @@ public class UndirectedGraph extends JPanel {
         });
     }
 
-
-    @Override
-    protected void paintComponent(Graphics g) {
-        setupLabelPosition();
-        super.paintComponent(g);
-    }
-
-    @Override
     protected void paintChildren(Graphics g) {
 
         Graphics2D g2 = (Graphics2D) g;
@@ -58,40 +50,28 @@ public class UndirectedGraph extends JPanel {
         super.paintChildren(g);
     }
 
-    private void drawEdge(Graphics2D g2, UndirectedEdge edge) {
+    private void setupLabelPosition(UndirectedEdge edge) {
         var nodes = edge.getNodes();
         int x1 = nodes[0].getCenterX();
         int y1 = nodes[0].getCenterY();
         int x2 = nodes[1].getCenterX();
         int y2 = nodes[1].getCenterY();
 
-        g2.drawLine(x1, y1, x2, y2);
-    }
+        int centerX = Math.min(x1, x2) + Math.abs(x1 - x2) / 2;
+        int centerY = Math.min(y1, y2) + Math.abs(y1 - y2) / 2;
 
-    private void setupLabelPosition() {
-        for (var edge : edges) {
-            var nodes = edge.getNodes();
-            int x1 = nodes[0].getCenterX();
-            int y1 = nodes[0].getCenterY();
-            int x2 = nodes[1].getCenterX();
-            int y2 = nodes[1].getCenterY();
+        int dist = 25;
+        int distSqr = dist * dist;
+        if (x1 - x2 != 0) {
+            float slope = (float) (y1 - y2) / (x2 - x1);
+            double slopeSqr = slope * slope;
+            double diffX = Math.sqrt(distSqr / (1 + slopeSqr));
+            double diffY = Math.sqrt(distSqr - distSqr / (1 + slopeSqr));
 
-            int centerX = Math.min(x1, x2) + Math.abs(x1 - x2) / 2;
-            int centerY = Math.min(y1, y2) + Math.abs(y1 - y2) / 2;
-
-            int dist = 25;
-            int distSqr = dist * dist;
-            if (x1 - x2 != 0) {
-                float slope = (float) (y1 - y2) / (x2 - x1);
-                double slopeSqr = slope * slope;
-                double diffX = Math.sqrt(distSqr / (1 + slopeSqr));
-                double diffY = Math.sqrt(distSqr - distSqr / (1 + slopeSqr));
-
-                centerX = (int) (centerX + diffX);
-                centerY = (int) (centerY + diffY);
-            }
-            edge.getWeightLabel().setBounds(centerX, centerY, 30, 30);
+            centerX = (int) (centerX + diffX);
+            centerY = (int) (centerY + diffY);
         }
+        edge.getWeightLabel().setBounds(centerX, centerY, 30, 30);
     }
 
     private void createVertex(MouseEvent e) {
@@ -110,20 +90,90 @@ public class UndirectedGraph extends JPanel {
         mainFrame.repaint();
     }
 
+    private void drawEdge(Graphics2D g2, UndirectedEdge edge) {
+        var nodes = edge.getNodes();
+        int x1 = nodes[0].getCenterX();
+        int y1 = nodes[0].getCenterY();
+        int x2 = nodes[1].getCenterX();
+        int y2 = nodes[1].getCenterY();
+
+        g2.drawLine(x1, y1, x2, y2);
+    }
+
     void addNewEdge(UndirectedEdge newEdge, UndirectedEdge stupidStageLogic) {
         if (!isDuplicateEdge(newEdge)) {
             edges.add(newEdge);
             add(newEdge);
+
+
+            int x1 = newEdge.getNodes()[0].getCenterX();
+            int y1 = newEdge.getNodes()[0].getCenterY();
+            int x2 = newEdge.getNodes()[1].getCenterX();
+            int y2 = newEdge.getNodes()[1].getCenterY();
+            int centerX = Math.min(x1, x2) + Math.abs(x1 - x2) / 2;
+            int centerY = Math.min(y1, y2) + Math.abs(y1 - y2) / 2;
+            newEdge.setBounds(centerX-3, centerY-3, 6, 6);
+            stupidStageLogic.setBounds(centerX, centerY, 6, 6);
+
+            edges.add(stupidStageLogic);
             add(stupidStageLogic);
 
+            setupLabelPosition(newEdge);
             weightLabels.add(newEdge.getWeightLabel());
             add(newEdge.getWeightLabel());
 
             whiteVertices();
-            mainFrame.repaint();
 
+            mainFrame.repaint();
         }
     }
+
+    void removeEdge(UndirectedEdge edge) {
+        remove(edge);
+        edges.remove(edge);
+        remove(edge.getWeightLabel());
+        var oppositeEdge = edges
+                .stream()
+                .filter(it -> it.getNodes()[0] == edge.getNodes()[1] && it.getNodes()[1] == edge.getNodes()[0])
+                .findFirst();
+        oppositeEdge.ifPresent(e -> remove(e.getWeightLabel()));
+        oppositeEdge.ifPresent(this::remove);
+        getWeightLabels().remove(edge.getWeightLabel());
+        edge.getNodes()[0].disconnectVertex(edge.getNodes()[1]);
+        edge.getNodes()[1].disconnectVertex(edge.getNodes()[0]);
+
+        mainFrame.repaint();
+    }
+
+    void removeVertex(Vertex vertex) {
+        remove(vertex);
+        vertices.remove(vertex);
+        edges.stream().filter(e -> e.getNodes()[0] == vertex || e.getNodes()[1] == vertex).forEach(this::removeEdge);
+        edges.removeIf(e -> e.getNodes()[0] == vertex || e.getNodes()[1] == vertex);
+        mainFrame.repaint();
+    }
+
+    void reset() {
+        for (var vertex : vertices) {
+            remove(vertex);
+        }
+        vertices.clear();
+
+        for (var edge : edges) {
+            remove(edge);
+        }
+        edges.clear();
+
+        for (var label : weightLabels) {
+            remove(label);
+        }
+        weightLabels.clear();
+
+        mainFrame.setMode(Mode.ADD_VERTEX);
+
+        mainFrame.repaint();
+    }
+
 
     private boolean isDuplicateEdge(UndirectedEdge newEdge) {
         return edges.stream()
@@ -133,5 +183,9 @@ public class UndirectedGraph extends JPanel {
     // getters
     Set<UndirectedEdge> getEdges() {
         return edges;
+    }
+
+    public Set<JLabel> getWeightLabels() {
+        return weightLabels;
     }
 }

@@ -2,13 +2,17 @@ package visualizer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class UndirectedEdge extends JComponent {
     private Vertex[] nodes = new Vertex[2];
     private int weight;
     private JLabel weightLabel = new JLabel();
+    private final UndirectedGraph graph;
 
-    public UndirectedEdge( Vertex fstNode, Vertex sndNode, int weight) {
+    public UndirectedEdge(Vertex fstNode, Vertex sndNode, int weight, UndirectedGraph graph) {
+        this.graph = graph;
         nodes[0] = fstNode;
         nodes[1] = sndNode;
         this.weight = weight;
@@ -19,15 +23,21 @@ public class UndirectedEdge extends JComponent {
         weightLabel.setForeground(Color.RED);
         weightLabel.setText(String.valueOf(weight));
         weightLabel.setName(String.format("EdgeLabel <%c -> %c>", fstNode.getId(), sndNode.getId()));
+
+        setBackground(Color.WHITE);
+        addEventListeners();
     }
 
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-
-        g.setColor(Color.WHITE);
-        g.setFont(new Font("Arial", Font.BOLD, 5));
-        g.drawLine(nodes[0].getX(), nodes[0].getY(), nodes[1].getX(), nodes[1].getY());
+    void addEventListeners() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                if (graph.mainFrame.getMode() == Mode.REMOVE_EDGE) {
+                    graph.removeEdge(UndirectedEdge.this);
+                }
+            }
+        });
     }
 
     // getters
