@@ -27,57 +27,6 @@ files:
         }
     }
   learner_created: false
-- name: src/visualizer/Graph.java
-  visible: true
-  text: |
-    package visualizer;
-
-    import javax.swing.*;
-    import java.awt.*;
-    import java.awt.event.MouseEvent;
-    import java.awt.event.MouseListener;
-
-    public class Graph extends JPanel implements MouseListener {
-        private final JFrame parent;
-
-        public Graph(JFrame parent, LayoutManager layout, String name) {
-            super(layout);
-            this.parent = parent;
-            setName(name);
-            addMouseListener(this);
-        }
-
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            int diffX = -25;
-            int diffY = -25;
-            Vertex vertex = VertexCreator.createVertex(this, e.getX() + diffX, e.getY() + diffY);
-            add(vertex);
-            paintComponents(getGraphics());
-            repaint();
-        }
-
-        @Override
-        public void mousePressed(MouseEvent e) {
-            //
-        }
-
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            //
-        }
-
-        @Override
-        public void mouseEntered(MouseEvent e) {
-            //
-        }
-
-        @Override
-        public void mouseExited(MouseEvent e) {
-            //
-        }
-    }
-  learner_created: true
 - name: src/visualizer/VertexCreator.java
   visible: true
   text: |
@@ -730,18 +679,24 @@ files:
         }
     }
   learner_created: false
-- name: src/visualizer/GraphMode.java
-  visible: true
-  learner_created: true
-- name: src/visualizer/Edge.java
-  visible: true
-  learner_created: true
-- name: src/visualizer/EdgeCreator.java
-  visible: true
-  learner_created: true
 - name: src/visualizer/DefaultMenuBar.java
   visible: true
   learner_created: true
+- name: src/visualizer/UndirectedEdgeCreator.java
+  visible: true
+  learner_created: true
+- name: src/visualizer/Mode.java
+  visible: true
+  learner_created: true
+- name: src/visualizer/UndirectedGraph.java
+  visible: true
+  learner_created: true
+- name: src/visualizer/UndirectedEdge.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/15626#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Sat, 28 May 2022 05:47:59 UTC
 record: -1

@@ -221,7 +221,7 @@ files:
       }
     }
   learner_created: false
-- name: test/Edge.java
+- name: test/UndirectedGraph.java
   visible: false
   text: |
     import java.awt.*;

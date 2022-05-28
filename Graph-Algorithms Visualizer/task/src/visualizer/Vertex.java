@@ -2,36 +2,41 @@ package visualizer;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Vertex extends JPanel {
-    private static final int DIFF_X = -25;
-    private static final int DIFF_Y = -25;
+    private static final int DIFF_X = 25;
+    private static final int DIFF_Y = 25;
     private static final int SIZE = 50;
 
-    private final Graph graph;
+    private final MainFrame mainFrame;
 
     private final JLabel label = new JLabel();
 
-    private final java.util.List<Vertex> connectedVertices = new ArrayList<>();
+    private final Set<Vertex> connectedVertices = new HashSet<>();
 
     private int centerX;
     private int centerY;
     private char id;
+    private static final Color DEFAULT_COLOR = Color.WHITE;
+    private Color color = DEFAULT_COLOR;
 
 
     // private final int diffX = 734;  // for corner vertices apply x = (i % 2) * diffX
     // private final int diffY = 511;   // for corner vertices apply y = (i / 2) * diffY
 
 
-    public Vertex(Graph graph, int x, int y, char id) {
-        this.graph = graph;
-        this.centerX = x + DIFF_X;
-        this.centerY = y + DIFF_Y;
+    public Vertex(MainFrame mainFrame, int x, int y, char id) {
+        this.mainFrame = mainFrame;
+        this.centerX = x - DIFF_X;
+        this.centerY = y - DIFF_Y;
         this.id = id;
 
         initComponents();
+        setActionEvents();
     }
 
     private void initComponents() {
@@ -46,10 +51,34 @@ public class Vertex extends JPanel {
         add(label);
     }
 
+    private void setActionEvents() {
+        addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+                switch (mainFrame.getMode()) {
+                    case ADD_VERTEX, NONE_MODE -> highlight();
+                    case ADD_EDGE -> createEdge();
+                }
+            }
+        });
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
-        g.setColor(Color.WHITE);
+        g.setColor(color);
         g.fillOval(0, 0, SIZE, SIZE);
+    }
+
+    private void createEdge() {
+        highlight();
+        UndirectedEdgeCreator.createUndirectedEdge(Vertex.this);
+    }
+
+    private void highlight() {
+        mainFrame.getGraph().whiteVertices();
+        color = Color.yellow;
+        mainFrame.getGraph().repaint();
     }
 
     void connectVertex(Vertex vertex) {
@@ -77,13 +106,28 @@ public class Vertex extends JPanel {
         label.setText(labelText);
     }
 
+    public void resetColor() {
+        this.color = DEFAULT_COLOR;
+    }
 
     // getters
     char getId() {
         return id;
     }
 
-    List<Vertex> getConnectedVertices() {
+    Set<Vertex> getConnectedVertices() {
         return connectedVertices;
+    }
+
+    public int getCenterX() {
+        return centerX + DIFF_X;
+    }
+
+    public int getCenterY() {
+        return centerY + DIFF_Y;
+    }
+
+    public MainFrame getMainFrame() {
+        return mainFrame;
     }
 }

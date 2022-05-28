@@ -3,16 +3,24 @@ package visualizer;
 import javax.swing.*;
 
 public class VertexCreator {
+    private static final String MESSAGE = "Enter the Vertex Id (should be 1 char";
+    private static final String TITLE = "Vertex";
+
     private VertexCreator() {
     }
 
-    static Vertex createVertex(Graph graph, int x, int y) {
-        String input = JOptionPane.showInputDialog(graph, "Enter the Vertex Id (should be 1 char", "Vertex", JOptionPane.QUESTION_MESSAGE);
-        if (isValidId(input)) {
-            return new Vertex(graph, x, y, input.charAt(0));
+
+    static Vertex createVertex(MainFrame mainFrame, int x, int y) {
+        String input = JOptionPane.showInputDialog(mainFrame, MESSAGE, TITLE, JOptionPane.QUESTION_MESSAGE);
+        if (input == null) {
+            return null;
         }
-        return createVertex(graph, x, y);
+        if (isValidId(input)) {
+            return new Vertex(mainFrame, x, y, input.charAt(0));
+        }
+        return createVertex(mainFrame, x, y);
     }
+
 
     private static boolean isValidId(String input) {
         if (input.length() == 1) {

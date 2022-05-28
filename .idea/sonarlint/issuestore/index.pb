@@ -31,3 +31,7 @@ j
 :Graph-Algorithms Visualizer/Drawing circles/task-info.yaml,e\9\e95578ae2beed68ce712a9aae4e36da567b86cdf
 Æ
 •.idea/modules/Graph-Algorithms Visualizer/task/build/classes/java/Graph-Algorithms_Visualizer.Graph-Algorithms_Visualizer-task-build-classes-java.iml,5\0\50ca23301b4e81ebd595828ba55f7036fcb17636
+j
+:Graph-Algorithms Visualizer/Click to vertex/task-info.yaml,d\8\d8ba280ed22c5bc647666012f49e7212552aa818
+\
+,Graph-Algorithms Visualizer/lesson-info.yaml,9\7\9774ae8d3409520f1b4bf88bd58c7f3095ff75d1

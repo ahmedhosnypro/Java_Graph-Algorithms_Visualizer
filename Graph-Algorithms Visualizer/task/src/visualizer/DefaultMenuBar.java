@@ -4,16 +4,16 @@ import javax.swing.*;
 import java.awt.event.KeyEvent;
 
 public class DefaultMenuBar extends JMenuBar {
-    private final Graph graph;
+    private final MainFrame mainFrame;
     private final JMenu modeMenu = new JMenu("Mode");
-    private final JMenuItem addVertex = new JMenuItem(GraphMode.ADD_VERTEX.getMode());
-    private final JMenuItem addEdge = new JMenuItem(GraphMode.ADD_EDGE.getMode());
-    private final JMenuItem none = new JMenuItem(GraphMode.NONE.getMode());
+    private final JMenuItem addVertex = new JMenuItem(Mode.ADD_VERTEX.getName());
+    private final JMenuItem addEdge = new JMenuItem(Mode.ADD_EDGE.getName());
+    private final JMenuItem none = new JMenuItem(Mode.NONE_MODE.getName());
     private final JMenuItem exit = new JMenuItem("Exit");
 
-    DefaultMenuBar(MainFrame mainFrame, Graph graph) {
+    DefaultMenuBar(MainFrame mainFrame) {
         mainFrame.setJMenuBar(this);
-        this.graph = graph;
+        this.mainFrame = mainFrame;
         initComponents();
     }
 
@@ -21,9 +21,13 @@ public class DefaultMenuBar extends JMenuBar {
         modeMenu.setMnemonic(KeyEvent.VK_Q);
         add(modeMenu);
 
-        addVertex.addActionListener(e -> graph.setGraphMode(GraphMode.ADD_VERTEX));
-        addEdge.addActionListener(e -> graph.setGraphMode(GraphMode.ADD_EDGE));
-        none.addActionListener(e -> graph.setGraphMode(GraphMode.NONE));
+        addVertex.setName("Add a Vertex");
+        addEdge.setName("Add an Edge");
+        none.setName("None");
+
+        addVertex.addActionListener(e -> mainFrame.setMode(Mode.ADD_VERTEX));
+        addEdge.addActionListener(e -> mainFrame.setMode(Mode.ADD_EDGE));
+        none.addActionListener(e -> mainFrame.setMode(Mode.NONE_MODE));
         exit.addActionListener(e -> System.exit(0));
 
         modeMenu.add(addVertex);
