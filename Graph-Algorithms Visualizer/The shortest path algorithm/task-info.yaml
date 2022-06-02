@@ -81,25 +81,6 @@ files:
         }
     }
   learner_created: false
-- name: test/GraphData.java
-  visible: false
-  text: |
-    import java.util.List;
-
-    public interface GraphData {
-        List<Vertex> getVertices();
-
-        List<Edge> getEdges();
-
-        String getDFSText();
-
-        String getBFSText();
-
-        String getDijkstraText();
-
-        String getSource();
-    }
-  learner_created: false
 - name: test/GraphDataOne.java
   visible: false
   text: |
@@ -901,6 +882,28 @@ files:
         }
     }
   learner_created: true
+- name: src/visualizer/DijkstraAlgorithm.java
+  visible: true
+  learner_created: true
+- name: test/GraphData.java
+  visible: false
+  text: |
+    import java.util.List;
+
+    public interface GraphData {
+        List<Vertex> getVertices();
+
+        List<Edge> getEdges();
+
+        String getDFSText();
+
+        String getBFSText();
+
+        String getDijkstraText();
+
+        String getSource();
+    }
+  learner_created: false
 - name: test/ShortestPathAlgorithmTests.java
   visible: false
   text: |
@@ -1431,12 +1434,9 @@ files:
         }
     }
   learner_created: false
-- name: src/visualizer/DijkstraAlgorithm.java
-  visible: true
-  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/15629#comment
 status: Solved
 feedback:
   message: Congratulations!
   time: Thu, 02 Jun 2022 08:19:49 UTC
-record: -1
+record: 6

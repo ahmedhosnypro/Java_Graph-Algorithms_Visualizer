@@ -13,8 +13,6 @@ public class DijkstraAlgorithm extends Algorithm {
         super.startPoint = startPoint;
     }
 
-    private int count = 1;
-
     @Override
     String search() {
         weights = new LinkedHashMap<>();
@@ -38,14 +36,11 @@ public class DijkstraAlgorithm extends Algorithm {
             if (entry.getKey() != startPoint && entry.getKey() != vertex && !parents.contains(entry.getKey())) {
                 int vertWeight = weights.get(vertex) + entry.getValue();
                 weights.put(entry.getKey(), Math.min(vertWeight, weights.getOrDefault(entry.getKey(), Integer.MAX_VALUE)));
-                System.out.println("p1 " + count + " " + entry.getKey().getName());
-                count++;
             }
         }
 
         for (var entry : tmpMap.entrySet()) {
             if (entry.getKey() != startPoint && entry.getKey() != vertex && !parents.contains(entry.getKey())) {
-                System.out.println("p2 " + count + " " + entry.getKey().getName());
                 var tmpSet = new HashSet<>(parents);
                 tmpSet.add(vertex);
                 findShortestPath(entry.getKey(), tmpSet);

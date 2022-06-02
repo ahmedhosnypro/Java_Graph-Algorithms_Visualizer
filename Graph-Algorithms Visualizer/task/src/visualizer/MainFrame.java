@@ -56,7 +56,7 @@ public class MainFrame extends JFrame {
         graph.whiteVertices();
         this.mode = graphMode;
 
-        if (graphMode == Mode.BFS_ALGORITHM || graphMode == Mode.DFS_ALGORITHM || graphMode == Mode.DIJKSTRA_ALGORITHM) {
+        if (graphMode == Mode.BFS_ALGORITHM || graphMode == Mode.DFS_ALGORITHM || graphMode == Mode.DIJKSTRA_ALGORITHM || graphMode == Mode.PRIM_ALGORITHM) {
             algorithmsResultLabel.setText("Please choose a starting vertex");
             algorithmsResultLabel.setBounds((int) (WIDTH - (algorithmsResultLabel.getText().length() / 2d) * TEXT_SIZE_PERCENT) / 2, 510, (int) (algorithmsResultLabel.getText().length() * TEXT_SIZE_PERCENT), 20);
             modeLabel.setText(CURRENT_MODE + Mode.NONE_MODE.getName());

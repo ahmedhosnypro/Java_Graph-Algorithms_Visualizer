@@ -8,7 +8,8 @@ public enum Mode {
     NONE_MODE("None"),
     DFS_ALGORITHM("Depth-First Search"),
     BFS_ALGORITHM("Breadth-First Search"),
-    DIJKSTRA_ALGORITHM("Dijkstra's Algorithm");
+    DIJKSTRA_ALGORITHM("Dijkstra's Algorithm"),
+    PRIM_ALGORITHM("Prim's Algorithm");
 
     private final String name;
 

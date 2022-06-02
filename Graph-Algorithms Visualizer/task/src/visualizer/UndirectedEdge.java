@@ -6,9 +6,9 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class UndirectedEdge extends JComponent {
-    private Vertex[] nodes = new Vertex[2];
-    private int weight;
-    private JLabel weightLabel = new JLabel();
+    private final Vertex[] nodes = new Vertex[2];
+    private final int weight;
+    private final JLabel weightLabel = new JLabel();
     private final UndirectedGraph graph;
 
     public UndirectedEdge(Vertex fstNode, Vertex sndNode, int weight, UndirectedGraph graph) {

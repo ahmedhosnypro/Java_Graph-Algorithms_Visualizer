@@ -41,7 +41,7 @@ public class UndirectedGraph extends JPanel {
     protected void paintChildren(Graphics g) {
 
         Graphics2D g2 = (Graphics2D) g;
-        g2.setStroke(new BasicStroke(3));
+        g2.setStroke(new BasicStroke(6));
         g2.setColor(Color.WHITE);
         for (var edge : edges) {
             drawEdge(g2, edge);
@@ -112,8 +112,8 @@ public class UndirectedGraph extends JPanel {
             int y2 = newEdge.getNodes()[1].getCenterY();
             int centerX = Math.min(x1, x2) + Math.abs(x1 - x2) / 2;
             int centerY = Math.min(y1, y2) + Math.abs(y1 - y2) / 2;
-            newEdge.setBounds(centerX-3, centerY-3, 6, 6);
-            stupidStageLogic.setBounds(centerX, centerY, 6, 6);
+            newEdge.setBounds(centerX - 3, centerY - 3, 50, 50);
+            stupidStageLogic.setBounds(centerX, centerY, 50, 50);
 
             edges.add(stupidStageLogic);
             add(stupidStageLogic);
@@ -129,16 +129,29 @@ public class UndirectedGraph extends JPanel {
     }
 
     void removeEdge(UndirectedEdge edge) {
-        remove(edge);
-        edges.remove(edge);
-        remove(edge.getWeightLabel());
-        var oppositeEdge = edges
+        var optEdge = edges
                 .stream()
                 .filter(it -> it.getNodes()[0] == edge.getNodes()[1] && it.getNodes()[1] == edge.getNodes()[0])
                 .findFirst();
-        oppositeEdge.ifPresent(e -> remove(e.getWeightLabel()));
-        oppositeEdge.ifPresent(this::remove);
-        getWeightLabels().remove(edge.getWeightLabel());
+
+        UndirectedEdge oppositeEdge = null;
+        if (optEdge.isPresent()) {
+            oppositeEdge = optEdge.get();
+        }
+
+        remove(edge);
+        edges.remove(edge);
+        remove(oppositeEdge);
+        edges.remove(oppositeEdge);
+
+        remove(edge.getWeightLabel());
+        weightLabels.remove(edge.getWeightLabel());
+
+        if (oppositeEdge != null) {
+            remove(oppositeEdge.getWeightLabel());
+            weightLabels.remove(oppositeEdge.getWeightLabel());
+        }
+
         edge.getNodes()[0].disconnectVertex(edge.getNodes()[1]);
         edge.getNodes()[1].disconnectVertex(edge.getNodes()[0]);
 

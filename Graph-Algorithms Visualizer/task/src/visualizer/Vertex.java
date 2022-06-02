@@ -6,10 +6,10 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Vertex extends JPanel {
     private static final int DIFF_X = 25;
@@ -27,10 +27,6 @@ public class Vertex extends JPanel {
     private char id;
     private static final Color DEFAULT_COLOR = Color.WHITE;
     private Color color = DEFAULT_COLOR;
-
-    private ExecutorService executor = Executors.newSingleThreadExecutor();
-
-
     // private final int diffX = 734;  // for corner vertices apply x = (i % 2) * diffX
     // private final int diffY = 511;   // for corner vertices apply y = (i / 2) * diffY
 
@@ -66,43 +62,34 @@ public class Vertex extends JPanel {
                     case ADD_VERTEX, NONE_MODE, REMOVE_EDGE -> highlight();
                     case ADD_EDGE -> createEdge();
                     case REMOVE_VERTEX -> removeVertex();
-                    case DFS_ALGORITHM -> {
-                        mainFrame.setResultLabelText("Please wait...");
-                        executor.submit(() -> {
-                            try {
-                                Thread.sleep(5000);
-                                mainFrame.setResultLabelText(new DepthFirstSearch(Vertex.this).search());
-                            } catch (InterruptedException ex) {
-                                System.out.println(ex.getMessage());
-                            }
-
-                        });
-                    }
-                    case BFS_ALGORITHM -> {
-                        mainFrame.setResultLabelText("Please wait...");
-                        executor.submit(() -> {
-                            try {
-                                Thread.sleep(5000);
-                                mainFrame.setResultLabelText(new BreadthFirstSearch(Vertex.this).search());
-                            } catch (InterruptedException ex) {
-                                System.out.println(ex.getMessage());
-                            }
-                        });
-                    }
-                    case DIJKSTRA_ALGORITHM -> {
-                        mainFrame.setResultLabelText("Please wait...");
-                        executor.submit(() -> {
-                            try {
-                                Thread.sleep(5000);
-                                mainFrame.setResultLabelText(new DijkstraAlgorithm(Vertex.this).search());
-                            } catch (InterruptedException ex) {
-                                System.out.println(ex.getMessage());
-                            }
-                        });
-                    }
+                    case DFS_ALGORITHM -> search(new DepthFirstSearch(Vertex.this));
+                    case BFS_ALGORITHM -> search(new BreadthFirstSearch(Vertex.this));
+                    case DIJKSTRA_ALGORITHM -> search(new DijkstraAlgorithm(Vertex.this));
+                    case PRIM_ALGORITHM -> search(new PrimAlgorithm(Vertex.this));
                 }
             }
         });
+    }
+
+    private void search(Algorithm algorithm) {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        redLight();
+        SearchStrategy.setStrategy(algorithm);
+        mainFrame.setResultLabelText("Please wait...");
+        executor.submit(() -> {
+            try {
+                Thread.sleep(5000);
+                mainFrame.setResultLabelText(SearchStrategy.search());
+            } catch (InterruptedException ex) {
+                System.out.println(ex.getMessage());
+            }
+            try {
+                executor.awaitTermination(1, TimeUnit.SECONDS);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        executor.shutdown();
     }
 
     @Override
@@ -122,6 +109,12 @@ public class Vertex extends JPanel {
         mainFrame.getGraph().repaint();
     }
 
+    private void redLight() {
+        mainFrame.getGraph().whiteVertices();
+        color = Color.RED;
+        mainFrame.getGraph().repaint();
+    }
+
     private void removeVertex() {
         mainFrame.getGraph().removeVertex(this);
     }
@@ -131,7 +124,11 @@ public class Vertex extends JPanel {
     }
 
     void disconnectVertex(Vertex vertex) {
-        connectedVertices.remove(vertex);
+        for (var entry : new HashSet<>(connectedVertices.entrySet())) {
+            if (connectedVertices.get(entry.getKey()) == vertex) {
+                connectedVertices.remove(entry.getKey());
+            }
+        }
     }
 
     // setters
