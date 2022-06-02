@@ -16,6 +16,7 @@ public class DefaultMenuBar extends JMenuBar {
     private final JMenuItem noneModeMenuItem = new JMenuItem(Mode.NONE_MODE.getName());
     private final JMenuItem DFS_menuItem = new JMenuItem("Depth-First Search");
     private final JMenuItem BFS_menuItem = new JMenuItem("Breadth-First Search");
+    private final JMenuItem dijkstraAlgorithmMenuItem = new JMenuItem("Dijkstra's Algorithm");
     private final JMenuItem exit = new JMenuItem("Exit");
 
     DefaultMenuBar(MainFrame mainFrame) {
@@ -64,12 +65,15 @@ public class DefaultMenuBar extends JMenuBar {
         algorithmsMenu.setName("Algorithms");
         DFS_menuItem.setName("Depth-First Search");
         BFS_menuItem.setName("Breadth-First Search");
+        dijkstraAlgorithmMenuItem.setName("Dijkstra's Algorithm");
 
         DFS_menuItem.addActionListener(e -> mainFrame.setMode(Mode.DFS_ALGORITHM));
         BFS_menuItem.addActionListener(e -> mainFrame.setMode(Mode.BFS_ALGORITHM));
+        dijkstraAlgorithmMenuItem.addActionListener(e -> mainFrame.setMode(Mode.DIJKSTRA_ALGORITHM));
 
         algorithmsMenu.add(DFS_menuItem);
         algorithmsMenu.add(BFS_menuItem);
+        algorithmsMenu.add(dijkstraAlgorithmMenuItem);
 
         add(algorithmsMenu);
     }

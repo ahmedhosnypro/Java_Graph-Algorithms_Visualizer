@@ -1,43 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="CompilerConfiguration">
-    <bytecodeTargetLevel target="17">
-      <module name="Graph-Algorithms_Visualizer.Graph-Algorithms_Visualizer-task-build-classes-java.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Graph-Algorithms_Visualizer-task-build-generated-sources-annotationProcessor-java.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Graph-Algorithms_Visualizer-task-build-generated-sources-headers-java.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Graph-Algorithms_Visualizer-task-build-reports-tests.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Graph-Algorithms_Visualizer-task-build-test-results.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Graph-Algorithms_Visualizer-task-build-tmp.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Graph-Algorithms_Visualizer-task-out.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Graph-Algorithms_Visualizer-task.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Callable_and_Future-Create_a_callable.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Callable_and_Future-Execute_Callable_objects.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Callable_and_Future-Get_the_result.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Callable_and_Future-How_many_Callable_objects_are_there.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Callable_and_Future-How_many_tasks_are_finished.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Callable_and_Future-Theory.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Callable_and_Future-What_is_Future.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Executors-Asynchronous_email_sending.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Executors-Check_whether_a_number_is_prime.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Executors-Messaging.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Executors-Supplying_a_task.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Executors-Theory.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Interruptions-Handling_interruptions.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Interruptions-Interrupting_a_thread.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Interruptions-Theory.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Memento-Roll_back.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Memento-Theory.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Nested_classes-Create_class.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Nested_classes-Create_prototype.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Nested_classes-Find_min_and_max.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Nested_classes-Make_slices.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Nested_classes-Scope,_scope_and_scope.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Nested_classes-Theory.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Type_Bounds-Enums.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Type_Bounds-Number_holder.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Type_Bounds-The_basic_expression.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.Topics-Type_Bounds-Theory.main" target="17" />
-      <module name="Graph-Algorithms_Visualizer.util.main" target="17" />
-    </bytecodeTargetLevel>
+    <bytecodeTargetLevel target="17" />
   </component>
 </project>

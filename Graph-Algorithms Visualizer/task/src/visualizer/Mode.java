@@ -7,7 +7,8 @@ public enum Mode {
     REMOVE_EDGE("Remove an Edge"),
     NONE_MODE("None"),
     DFS_ALGORITHM("Depth-First Search"),
-    BFS_ALGORITHM("Breadth-First Search");
+    BFS_ALGORITHM("Breadth-First Search"),
+    DIJKSTRA_ALGORITHM("Dijkstra's Algorithm");
 
     private final String name;
 

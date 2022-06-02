@@ -89,6 +89,17 @@ public class Vertex extends JPanel {
                             }
                         });
                     }
+                    case DIJKSTRA_ALGORITHM -> {
+                        mainFrame.setResultLabelText("Please wait...");
+                        executor.submit(() -> {
+                            try {
+                                Thread.sleep(5000);
+                                mainFrame.setResultLabelText(new DijkstraAlgorithm(Vertex.this).search());
+                            } catch (InterruptedException ex) {
+                                System.out.println(ex.getMessage());
+                            }
+                        });
+                    }
                 }
             }
         });

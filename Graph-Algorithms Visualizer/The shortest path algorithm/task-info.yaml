@@ -27,6 +27,880 @@ files:
         }
     }
   learner_created: false
+- name: test/GraphDataTwo.java
+  visible: false
+  text: |
+    import java.awt.*;
+    import java.util.List;
+
+    public class GraphDataTwo implements GraphData {
+
+        @Override
+        public List<Vertex> getVertices() {
+            return List.of(
+                    new Vertex("1", new Point(361, 54)),
+                    new Vertex("2", new Point(152, 164)),
+                    new Vertex("3", new Point(599, 155)),
+                    new Vertex("4", new Point(47, 394)),
+                    new Vertex("5", new Point(291, 392)),
+                    new Vertex("6", new Point(419, 390)),
+                    new Vertex("7", new Point(744, 392))
+            );
+        }
+
+        @Override
+        public List<Edge> getEdges() {
+            return List.of(
+                    new Edge("1", "2", 1),
+                    new Edge("1", "3", 3),
+                    new Edge("2", "4", 5),
+                    new Edge("5", "2", 7),
+                    new Edge("6", "3", 9),
+                    new Edge("7", "3", 11)
+            );
+        }
+
+        @Override
+        public String getDFSText() {
+            return "DFS : 1 -> 2 -> 4 -> 5 -> 3 -> 6 -> 7";
+        }
+
+        @Override
+        public String getBFSText() {
+            return "BFS : 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7";
+        }
+
+        @Override
+        public String getDijkstraText() {
+            return "2=1, 3=3, 4=6, 5=8, 6=12, 7=14";
+        }
+
+        @Override
+        public String getSource() {
+            return "1";
+        }
+    }
+  learner_created: false
+- name: test/GraphData.java
+  visible: false
+  text: |
+    import java.util.List;
+
+    public interface GraphData {
+        List<Vertex> getVertices();
+
+        List<Edge> getEdges();
+
+        String getDFSText();
+
+        String getBFSText();
+
+        String getDijkstraText();
+
+        String getSource();
+    }
+  learner_created: false
+- name: test/GraphDataOne.java
+  visible: false
+  text: |
+    import java.awt.*;
+    import java.util.List;
+
+    public class GraphDataOne implements GraphData {
+
+        @Override
+        public List<Vertex> getVertices() {
+            return List.of(
+                    new Vertex("A", new Point(175, 359)),
+                    new Vertex("B", new Point(224, 176)),
+                    new Vertex("C", new Point(365, 363)),
+                    new Vertex("D", new Point(408, 67)),
+                    new Vertex("E", new Point(531, 235)),
+                    new Vertex("F", new Point(590, 64))
+            );
+        }
+
+        @Override
+        public List<Edge> getEdges() {
+            return List.of(
+                    new Edge("A", "B", 1),
+                    new Edge("B", "D", 2),
+                    new Edge("D", "F", 3),
+                    new Edge("F", "E", 4),
+                    new Edge("E", "C", 5),
+                    new Edge("C", "A", 6),
+                    new Edge("B", "E", 7),
+                    new Edge("D", "C", 8),
+                    new Edge("B", "C", 9),
+                    new Edge("D", "E", 10)
+            );
+        }
+
+        @Override
+        public String getDFSText() {
+            return "DFS : A -> B -> D -> F -> E -> C";
+        }
+
+        @Override
+        public String getBFSText() {
+            return "BFS : A -> B -> C -> D -> E -> F";
+        }
+
+        @Override
+        public String getDijkstraText() {
+            return "B=1, C=6, D=3, E=8, F=6";
+        }
+
+        @Override
+        public String getSource() {
+            return "A";
+        }
+    }
+  learner_created: false
+- name: src/visualizer/DefaultMenuBar.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+    import java.awt.event.KeyEvent;
+
+    public class DefaultMenuBar extends JMenuBar {
+        private final MainFrame mainFrame;
+        private final JMenu fileMenu = new JMenu("File");
+        private final JMenu modeMenu = new JMenu("Mode");
+        private final JMenu algorithmsMenu = new JMenu("Algorithms");
+        private final JMenuItem addVertex = new JMenuItem(Mode.ADD_VERTEX.getName());
+        private final JMenuItem addEdge = new JMenuItem(Mode.ADD_EDGE.getName());
+        private final JMenuItem removeVertex = new JMenuItem(Mode.REMOVE_VERTEX.getName());
+        private final JMenuItem removeEdge = new JMenuItem(Mode.REMOVE_EDGE.getName());
+        private final JMenuItem newMenuItem = new JMenuItem("New");
+        private final JMenuItem noneModeMenuItem = new JMenuItem(Mode.NONE_MODE.getName());
+        private final JMenuItem DFS_menuItem = new JMenuItem("Depth-First Search");
+        private final JMenuItem BFS_menuItem = new JMenuItem("Breadth-First Search");
+        private final JMenuItem exit = new JMenuItem("Exit");
+
+        DefaultMenuBar(MainFrame mainFrame) {
+            mainFrame.setJMenuBar(this);
+            this.mainFrame = mainFrame;
+            initComponents();
+        }
+
+        void initComponents() {
+            fileMenu.setName("File");
+            add(fileMenu);
+
+            newMenuItem.setName("New");
+            newMenuItem.addActionListener(e -> mainFrame.getGraph().reset());
+
+            exit.setName("Exit");
+            exit.addActionListener(e -> System.exit(0));
+
+            fileMenu.add(newMenuItem);
+            fileMenu.addSeparator();
+            fileMenu.add(exit);
+
+            modeMenu.setName("Mode");
+            modeMenu.setMnemonic(KeyEvent.VK_Q);
+            add(modeMenu);
+
+
+            addVertex.setName("Add a Vertex");
+            addEdge.setName("Add an Edge");
+            removeVertex.setName("Remove a Vertex");
+            removeEdge.setName("Remove an Edge");
+            noneModeMenuItem.setName("None");
+
+            addVertex.addActionListener(e -> mainFrame.setMode(Mode.ADD_VERTEX));
+            addEdge.addActionListener(e -> mainFrame.setMode(Mode.ADD_EDGE));
+            removeVertex.addActionListener(e -> mainFrame.setMode(Mode.REMOVE_VERTEX));
+            removeEdge.addActionListener(e -> mainFrame.setMode(Mode.REMOVE_EDGE));
+            noneModeMenuItem.addActionListener(e -> mainFrame.setMode(Mode.NONE_MODE));
+
+            modeMenu.add(addVertex);
+            modeMenu.add(addEdge);
+            modeMenu.add(removeVertex);
+            modeMenu.add(removeEdge);
+            modeMenu.add(noneModeMenuItem);
+
+            algorithmsMenu.setName("Algorithms");
+            DFS_menuItem.setName("Depth-First Search");
+            BFS_menuItem.setName("Breadth-First Search");
+
+            DFS_menuItem.addActionListener(e -> mainFrame.setMode(Mode.DFS_ALGORITHM));
+            BFS_menuItem.addActionListener(e -> mainFrame.setMode(Mode.BFS_ALGORITHM));
+
+            algorithmsMenu.add(DFS_menuItem);
+            algorithmsMenu.add(BFS_menuItem);
+
+            add(algorithmsMenu);
+        }
+    }
+  learner_created: true
+- name: src/visualizer/Algorithm.java
+  visible: true
+  text: |
+    package visualizer;
+
+    public abstract class Algorithm {
+        Vertex startPoint;
+
+        abstract String search();
+    }
+  learner_created: true
+- name: src/visualizer/BreadthFirstSearch.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import java.util.*;
+
+    public class BreadthFirstSearch extends Algorithm {
+        private Set<Vertex> searched;
+        private StringBuilder ret;
+
+        private Deque<Vertex> toSearch;
+
+        public BreadthFirstSearch(Vertex startPoint) {
+            super.startPoint = startPoint;
+        }
+
+        @Override
+        String search() {
+            ret = new StringBuilder();
+            searched = new HashSet<>();
+            toSearch = new LinkedList<>();
+            searched.add(startPoint);
+            ret.append(" ").append(startPoint.getId()).append(" ");
+            bfSearch(startPoint);
+            return "BFS : " + ret.toString().trim().replaceAll("\\s+", " -> ");
+        }
+
+        void bfSearch(Vertex vertex) {
+            for (var vert : vertex.getConnectedVertices().values()) {
+                if (!searched.contains(vert)) {
+                    toSearch.addLast(vert);
+                }
+            }
+            doSearch();
+        }
+
+        void doSearch() {
+            while (!toSearch.isEmpty()) {
+                var vertex = toSearch.pollFirst();
+                if (!searched.contains(vertex)) {
+                    ret.append(" ").append(vertex.getId()).append(" ");
+                    searched.add(vertex);
+                    bfSearch(vertex);
+                }
+            }
+        }
+    }
+  learner_created: true
+- name: src/visualizer/UndirectedEdge.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+    import java.awt.*;
+    import java.awt.event.MouseAdapter;
+    import java.awt.event.MouseEvent;
+
+    public class UndirectedEdge extends JComponent {
+        private Vertex[] nodes = new Vertex[2];
+        private int weight;
+        private JLabel weightLabel = new JLabel();
+        private final UndirectedGraph graph;
+
+        public UndirectedEdge(Vertex fstNode, Vertex sndNode, int weight, UndirectedGraph graph) {
+            this.graph = graph;
+            nodes[0] = fstNode;
+            nodes[1] = sndNode;
+            this.weight = weight;
+
+            fstNode.connectVertex(sndNode, weight);
+
+            setName(String.format("Edge <%c -> %c>", fstNode.getId(), sndNode.getId()));
+
+            weightLabel.setFont(new Font("Arial", Font.BOLD, 20));
+            weightLabel.setForeground(Color.RED);
+            weightLabel.setText(String.valueOf(weight));
+            weightLabel.setName(String.format("EdgeLabel <%c -> %c>", fstNode.getId(), sndNode.getId()));
+
+            setBackground(Color.WHITE);
+            addEventListeners();
+        }
+
+        void addEventListeners() {
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    if (graph.mainFrame.getMode() == Mode.REMOVE_EDGE) {
+                        graph.removeEdge(UndirectedEdge.this);
+                    }
+                }
+            });
+        }
+
+        // getters
+
+        Vertex[] getNodes() {
+            return nodes;
+        }
+
+        int getWeight() {
+            return weight;
+        }
+
+        JLabel getWeightLabel() {
+            return weightLabel;
+        }
+    }
+  learner_created: true
+- name: src/visualizer/UndirectedEdgeCreator.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+
+    public class UndirectedEdgeCreator {
+        private static Vertex fstNode = null;
+        private static final String MESSAGE = "Enter Weight";
+        private static final String TITLE = "Input";
+
+        private UndirectedEdgeCreator() {
+        }
+
+        static void createUndirectedEdge(Vertex vertex) {
+            if (fstNode == null) {
+                fstNode = vertex;
+            } else if (fstNode != vertex) {
+                Integer weight = getWeight(vertex.getMainFrame().getGraph());
+                if (weight == null) {
+                    fstNode.getMainFrame().getGraph().whiteVertices();
+                    fstNode = null;
+                    return;
+                }
+                var undirectedEdges = vertex.getMainFrame().getGraph().getEdges();
+                if (!isDuplicateEdge(undirectedEdges, vertex)) {
+
+                    vertex.getMainFrame().getGraph()
+                            .addNewEdge(new UndirectedEdge(fstNode, vertex, weight, vertex.getMainFrame().getGraph()),
+                                    new UndirectedEdge(vertex, fstNode, weight, vertex.getMainFrame().getGraph()));
+                    fstNode = null;
+                }
+            }
+        }
+
+        private static Integer getWeight(UndirectedGraph graph) {
+            String input = JOptionPane.showInputDialog(graph, MESSAGE, TITLE, JOptionPane.QUESTION_MESSAGE);
+            if (input == null) {
+                return null;
+            }
+            if (isValidWeight(input)) {
+                return Integer.parseInt(input);
+            }
+            return getWeight(graph);
+        }
+
+
+        private static boolean isValidWeight(String input) {
+            try {
+                Integer.parseInt(input);
+                return true;
+            } catch (IllegalArgumentException e) {
+                return false;
+            }
+        }
+
+        private static boolean isDuplicateEdge(java.util.Set<UndirectedEdge> edges, Vertex sndNode) {
+            return edges.stream()
+                    .anyMatch(edge -> edge.getNodes()[0] == fstNode && edge.getNodes()[1] == sndNode);
+        }
+
+        public static void reset() {
+            fstNode = null;
+        }
+    }
+  learner_created: true
+- name: src/visualizer/DepthFirstSearch.java
+  visible: true
+  text: |-
+    package visualizer;
+
+    import java.util.HashSet;
+    import java.util.LinkedList;
+    import java.util.Set;
+
+    public class DepthFirstSearch extends Algorithm {
+
+        private Set<Vertex> searched;
+        private StringBuilder ret;
+
+        public DepthFirstSearch(Vertex startPoint) {
+            super.startPoint = startPoint;
+        }
+
+        @Override
+        String search() {
+            ret = new StringBuilder();
+            searched = new HashSet<>();
+            ret.append(" ").append(startPoint.getId()).append(" ");
+            searched.add(startPoint);
+            dfSearch(startPoint);
+            return "DFS : " + ret.toString().trim().replaceAll("\\s+", " -> ");
+        }
+
+        void dfSearch(Vertex vertex) {
+            if (!searched.contains(vertex) && vertex.getConnectedVertices().isEmpty()) {
+                searched.add(vertex);
+                ret.append(" ").append(vertex.getId()).append(" ");
+            }
+
+
+            for (var vert : vertex.getConnectedVertices().values()) {
+                if (!searched.contains(vert)) {
+                    searched.add(vert);
+                    ret.append(" ").append(vert.getId()).append(" ");
+                    dfSearch(vert);
+                }
+            }
+        }
+    }
+  learner_created: true
+- name: src/visualizer/Mode.java
+  visible: true
+  text: |
+    package visualizer;
+
+    public enum Mode {
+        ADD_VERTEX("Add a Vertex"),
+        ADD_EDGE("Add an Edge"),
+        REMOVE_VERTEX("Remove a Vertex"),
+        REMOVE_EDGE("Remove an Edge"),
+        NONE_MODE("None"),
+        DFS_ALGORITHM("Depth-First Search"),
+        BFS_ALGORITHM("Breadth-First Search");
+
+        private final String name;
+
+        Mode(String mode) {
+            this.name = mode;
+        }
+
+        public String getName() {
+            return name;
+        }
+    }
+  learner_created: true
+- name: src/visualizer/VertexCreator.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+
+    public class VertexCreator {
+        private static final String MESSAGE = "Enter the Vertex Id (should be 1 char";
+        private static final String TITLE = "Vertex";
+
+        private VertexCreator() {
+        }
+
+
+        static Vertex createVertex(MainFrame mainFrame, int x, int y) {
+            String input = JOptionPane.showInputDialog(mainFrame, MESSAGE, TITLE, JOptionPane.QUESTION_MESSAGE);
+            if (input == null) {
+                return null;
+            }
+            if (isValidId(input)) {
+                return new Vertex(mainFrame, x, y, input.charAt(0));
+            }
+            return createVertex(mainFrame, x, y);
+        }
+
+
+        private static boolean isValidId(String input) {
+            if (input.length() == 1) {
+                return input.matches("[A-Za-z\\d]");
+            }
+            return false;
+        }
+    }
+  learner_created: true
+- name: src/visualizer/UndirectedGraph.java
+  visible: true
+  text: |-
+    package visualizer;
+
+    import javax.swing.*;
+    import java.awt.*;
+    import java.awt.event.MouseAdapter;
+    import java.awt.event.MouseEvent;
+    import java.util.HashSet;
+    import java.util.Set;
+
+    public class UndirectedGraph extends JPanel {
+        private final Set<Vertex> vertices = new HashSet<>();
+        private final Set<UndirectedEdge> edges = new HashSet<>();
+
+        private final Set<JLabel> weightLabels = new HashSet<>();
+
+        final MainFrame mainFrame;
+
+        public UndirectedGraph(MainFrame mainFrame, LayoutManager layout, String name) {
+            this.mainFrame = mainFrame;
+            setLayout(layout);
+            setName(name);
+            setForeground(Color.RED);
+            setBackground(Color.BLACK);
+            setBounds(0, 0, 800, 600);
+
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    switch (mainFrame.getMode()) {
+                        case ADD_VERTEX -> createVertex(e);
+                        case ADD_EDGE -> {
+                            // To Do
+                        }
+                        case NONE_MODE -> whiteVertices();
+                    }
+                }
+            });
+        }
+
+        protected void paintChildren(Graphics g) {
+
+            Graphics2D g2 = (Graphics2D) g;
+            g2.setStroke(new BasicStroke(3));
+            g2.setColor(Color.WHITE);
+            for (var edge : edges) {
+                drawEdge(g2, edge);
+            }
+
+            super.paintChildren(g);
+        }
+
+        private void setupLabelPosition(UndirectedEdge edge) {
+            var nodes = edge.getNodes();
+            int x1 = nodes[0].getCenterX();
+            int y1 = nodes[0].getCenterY();
+            int x2 = nodes[1].getCenterX();
+            int y2 = nodes[1].getCenterY();
+
+            int centerX = Math.min(x1, x2) + Math.abs(x1 - x2) / 2;
+            int centerY = Math.min(y1, y2) + Math.abs(y1 - y2) / 2;
+
+            int dist = 25;
+            int distSqr = dist * dist;
+            if (x1 - x2 != 0) {
+                float slope = (float) (y1 - y2) / (x2 - x1);
+                double slopeSqr = slope * slope;
+                double diffX = Math.sqrt(distSqr / (1 + slopeSqr));
+                double diffY = Math.sqrt(distSqr - distSqr / (1 + slopeSqr));
+
+                centerX = (int) (centerX + diffX);
+                centerY = (int) (centerY + diffY);
+            }
+            edge.getWeightLabel().setBounds(centerX, centerY, 30, 30);
+        }
+
+        private void createVertex(MouseEvent e) {
+            whiteVertices();
+            Vertex vertex = VertexCreator.createVertex(mainFrame, e.getX(), e.getY());
+            if (vertex != null) {
+                add(vertex);
+                vertices.add(vertex);
+                paintComponents(getGraphics());
+                mainFrame.repaint();
+            }
+        }
+
+        void whiteVertices() {
+            vertices.forEach(Vertex::resetColor);
+            mainFrame.repaint();
+        }
+
+        private void drawEdge(Graphics2D g2, UndirectedEdge edge) {
+            var nodes = edge.getNodes();
+            int x1 = nodes[0].getCenterX();
+            int y1 = nodes[0].getCenterY();
+            int x2 = nodes[1].getCenterX();
+            int y2 = nodes[1].getCenterY();
+
+            g2.drawLine(x1, y1, x2, y2);
+        }
+
+        void addNewEdge(UndirectedEdge newEdge, UndirectedEdge stupidStageLogic) {
+            if (!isDuplicateEdge(newEdge)) {
+                edges.add(newEdge);
+                add(newEdge);
+
+
+                int x1 = newEdge.getNodes()[0].getCenterX();
+                int y1 = newEdge.getNodes()[0].getCenterY();
+                int x2 = newEdge.getNodes()[1].getCenterX();
+                int y2 = newEdge.getNodes()[1].getCenterY();
+                int centerX = Math.min(x1, x2) + Math.abs(x1 - x2) / 2;
+                int centerY = Math.min(y1, y2) + Math.abs(y1 - y2) / 2;
+                newEdge.setBounds(centerX-3, centerY-3, 6, 6);
+                stupidStageLogic.setBounds(centerX, centerY, 6, 6);
+
+                edges.add(stupidStageLogic);
+                add(stupidStageLogic);
+
+                setupLabelPosition(newEdge);
+                weightLabels.add(newEdge.getWeightLabel());
+                add(newEdge.getWeightLabel());
+
+                whiteVertices();
+
+                mainFrame.repaint();
+            }
+        }
+
+        void removeEdge(UndirectedEdge edge) {
+            remove(edge);
+            edges.remove(edge);
+            remove(edge.getWeightLabel());
+            var oppositeEdge = edges
+                    .stream()
+                    .filter(it -> it.getNodes()[0] == edge.getNodes()[1] && it.getNodes()[1] == edge.getNodes()[0])
+                    .findFirst();
+            oppositeEdge.ifPresent(e -> remove(e.getWeightLabel()));
+            oppositeEdge.ifPresent(this::remove);
+            getWeightLabels().remove(edge.getWeightLabel());
+            edge.getNodes()[0].disconnectVertex(edge.getNodes()[1]);
+            edge.getNodes()[1].disconnectVertex(edge.getNodes()[0]);
+
+            mainFrame.repaint();
+        }
+
+        void removeVertex(Vertex vertex) {
+            remove(vertex);
+            vertices.remove(vertex);
+            edges.stream().filter(e -> e.getNodes()[0] == vertex || e.getNodes()[1] == vertex).forEach(this::removeEdge);
+            edges.removeIf(e -> e.getNodes()[0] == vertex || e.getNodes()[1] == vertex);
+            mainFrame.repaint();
+        }
+
+        void reset() {
+            for (var vertex : vertices) {
+                remove(vertex);
+            }
+            vertices.clear();
+
+            for (var edge : edges) {
+                remove(edge);
+            }
+            edges.clear();
+
+            for (var label : weightLabels) {
+                remove(label);
+            }
+            weightLabels.clear();
+
+            mainFrame.setMode(Mode.ADD_VERTEX);
+
+            mainFrame.repaint();
+        }
+
+
+        private boolean isDuplicateEdge(UndirectedEdge newEdge) {
+            return edges.stream()
+                    .anyMatch(e -> e.getNodes()[0] == newEdge.getNodes()[0] && e.getNodes()[1] == newEdge.getNodes()[1]);
+        }
+
+        // getters
+        Set<UndirectedEdge> getEdges() {
+            return edges;
+        }
+
+        public Set<JLabel> getWeightLabels() {
+            return weightLabels;
+        }
+
+        public Set<Vertex> getVertices() {
+            return vertices;
+        }
+    }
+  learner_created: true
+- name: src/visualizer/Vertex.java
+  visible: true
+  text: |
+    package visualizer;
+
+    import javax.swing.*;
+    import java.awt.*;
+    import java.awt.event.MouseAdapter;
+    import java.awt.event.MouseEvent;
+    import java.util.HashSet;
+    import java.util.Map;
+    import java.util.Set;
+    import java.util.TreeMap;
+    import java.util.concurrent.ExecutorService;
+    import java.util.concurrent.Executors;
+
+    public class Vertex extends JPanel {
+        private static final int DIFF_X = 25;
+        private static final int DIFF_Y = 25;
+        private static final int SIZE = 50;
+
+        private final MainFrame mainFrame;
+
+        private final JLabel label = new JLabel();
+
+        private final Map<Integer, Vertex> connectedVertices = new TreeMap<>();
+
+        private int centerX;
+        private int centerY;
+        private char id;
+        private static final Color DEFAULT_COLOR = Color.WHITE;
+        private Color color = DEFAULT_COLOR;
+
+        private ExecutorService executor = Executors.newSingleThreadExecutor();
+
+
+        // private final int diffX = 734;  // for corner vertices apply x = (i % 2) * diffX
+        // private final int diffY = 511;   // for corner vertices apply y = (i / 2) * diffY
+
+
+        public Vertex(MainFrame mainFrame, int x, int y, char id) {
+            this.mainFrame = mainFrame;
+            this.centerX = x - DIFF_X;
+            this.centerY = y - DIFF_Y;
+            this.id = id;
+
+            initComponents();
+            setActionEvents();
+        }
+
+        private void initComponents() {
+            setName("Vertex " + id);
+            setLayout(new GridBagLayout());
+            setBounds(centerX, centerY, SIZE, SIZE);
+
+            label.setName("VertexLabel " + id);
+            label.setText(String.valueOf(id));
+            label.setFont(new Font("SansSerif", Font.BOLD, 40));
+            label.setForeground(Color.BLACK);
+            add(label);
+        }
+
+        private void setActionEvents() {
+            addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    super.mouseClicked(e);
+                    switch (mainFrame.getMode()) {
+                        case ADD_VERTEX, NONE_MODE, REMOVE_EDGE -> highlight();
+                        case ADD_EDGE -> createEdge();
+                        case REMOVE_VERTEX -> removeVertex();
+                        case DFS_ALGORITHM -> {
+                            mainFrame.setResultLabelText("Please wait...");
+                            executor.submit(() -> {
+                                try {
+                                    Thread.sleep(5000);
+                                    mainFrame.setResultLabelText(new DepthFirstSearch(Vertex.this).search());
+                                } catch (InterruptedException ex) {
+                                    System.out.println(ex.getMessage());
+                                }
+
+                            });
+                        }
+                        case BFS_ALGORITHM -> {
+                            mainFrame.setResultLabelText("Please wait...");
+                            executor.submit(() -> {
+                                try {
+                                    Thread.sleep(5000);
+                                    mainFrame.setResultLabelText(new BreadthFirstSearch(Vertex.this).search());
+                                } catch (InterruptedException ex) {
+                                    System.out.println(ex.getMessage());
+                                }
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        @Override
+        protected void paintComponent(Graphics g) {
+            g.setColor(color);
+            g.fillOval(0, 0, SIZE, SIZE);
+        }
+
+        private void createEdge() {
+            highlight();
+            UndirectedEdgeCreator.createUndirectedEdge(Vertex.this);
+        }
+
+        private void highlight() {
+            mainFrame.getGraph().whiteVertices();
+            color = Color.yellow;
+            mainFrame.getGraph().repaint();
+        }
+
+        private void removeVertex() {
+            mainFrame.getGraph().removeVertex(this);
+        }
+
+        void connectVertex(Vertex vertex, int weight) {
+            connectedVertices.put(weight, vertex);
+        }
+
+        void disconnectVertex(Vertex vertex) {
+            connectedVertices.remove(vertex);
+        }
+
+        // setters
+        public void setX(int centerX) {
+            this.centerX = centerX;
+        }
+
+        public void setY(int centerY) {
+            this.centerY = centerY;
+        }
+
+        public void setId(char id) {
+            this.id = id;
+        }
+
+        void setLabel(String labelText) {
+            label.setText(labelText);
+        }
+
+        public void resetColor() {
+            this.color = DEFAULT_COLOR;
+        }
+
+        // getters
+        char getId() {
+            return id;
+        }
+
+        Map<Integer, Vertex> getConnectedVertices() {
+            return connectedVertices;
+        }
+
+        public int getCenterX() {
+            return centerX + DIFF_X;
+        }
+
+        public int getCenterY() {
+            return centerY + DIFF_Y;
+        }
+
+        public MainFrame getMainFrame() {
+            return mainFrame;
+        }
+    }
+  learner_created: true
 - name: test/ShortestPathAlgorithmTests.java
   visible: false
   text: |
@@ -557,136 +1431,12 @@ files:
         }
     }
   learner_created: false
-- name: test/GraphDataTwo.java
-  visible: false
-  text: |
-    import java.awt.*;
-    import java.util.List;
-
-    public class GraphDataTwo implements GraphData {
-
-        @Override
-        public List<Vertex> getVertices() {
-            return List.of(
-                    new Vertex("1", new Point(361, 54)),
-                    new Vertex("2", new Point(152, 164)),
-                    new Vertex("3", new Point(599, 155)),
-                    new Vertex("4", new Point(47, 394)),
-                    new Vertex("5", new Point(291, 392)),
-                    new Vertex("6", new Point(419, 390)),
-                    new Vertex("7", new Point(744, 392))
-            );
-        }
-
-        @Override
-        public List<Edge> getEdges() {
-            return List.of(
-                    new Edge("1", "2", 1),
-                    new Edge("1", "3", 3),
-                    new Edge("2", "4", 5),
-                    new Edge("5", "2", 7),
-                    new Edge("6", "3", 9),
-                    new Edge("7", "3", 11)
-            );
-        }
-
-        @Override
-        public String getDFSText() {
-            return "DFS : 1 -> 2 -> 4 -> 5 -> 3 -> 6 -> 7";
-        }
-
-        @Override
-        public String getBFSText() {
-            return "BFS : 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7";
-        }
-
-        @Override
-        public String getDijkstraText() {
-            return "2=1, 3=3, 4=6, 5=8, 6=12, 7=14";
-        }
-
-        @Override
-        public String getSource() {
-            return "1";
-        }
-    }
-  learner_created: false
-- name: test/GraphData.java
-  visible: false
-  text: |
-    import java.util.List;
-
-    public interface GraphData {
-        List<Vertex> getVertices();
-
-        List<Edge> getEdges();
-
-        String getDFSText();
-
-        String getBFSText();
-
-        String getDijkstraText();
-
-        String getSource();
-    }
-  learner_created: false
-- name: test/GraphDataOne.java
-  visible: false
-  text: |
-    import java.awt.*;
-    import java.util.List;
-
-    public class GraphDataOne implements GraphData {
-
-        @Override
-        public List<Vertex> getVertices() {
-            return List.of(
-                    new Vertex("A", new Point(175, 359)),
-                    new Vertex("B", new Point(224, 176)),
-                    new Vertex("C", new Point(365, 363)),
-                    new Vertex("D", new Point(408, 67)),
-                    new Vertex("E", new Point(531, 235)),
-                    new Vertex("F", new Point(590, 64))
-            );
-        }
-
-        @Override
-        public List<Edge> getEdges() {
-            return List.of(
-                    new Edge("A", "B", 1),
-                    new Edge("B", "D", 2),
-                    new Edge("D", "F", 3),
-                    new Edge("F", "E", 4),
-                    new Edge("E", "C", 5),
-                    new Edge("C", "A", 6),
-                    new Edge("B", "E", 7),
-                    new Edge("D", "C", 8),
-                    new Edge("B", "C", 9),
-                    new Edge("D", "E", 10)
-            );
-        }
-
-        @Override
-        public String getDFSText() {
-            return "DFS : A -> B -> D -> F -> E -> C";
-        }
-
-        @Override
-        public String getBFSText() {
-            return "BFS : A -> B -> C -> D -> E -> F";
-        }
-
-        @Override
-        public String getDijkstraText() {
-            return "B=1, C=6, D=3, E=8, F=6";
-        }
-
-        @Override
-        public String getSource() {
-            return "A";
-        }
-    }
-  learner_created: false
+- name: src/visualizer/DijkstraAlgorithm.java
+  visible: true
+  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/15629#comment
-status: Unchecked
+status: Solved
+feedback:
+  message: Congratulations!
+  time: Thu, 02 Jun 2022 08:19:49 UTC
 record: -1
