@@ -1,0 +1,22 @@
+type: choice
+is_multiple_choice: false
+options:
+- text: '&lt;T; A&gt;'
+- text: '&lt;T implements A&gt;'
+- text: '&lt;T, A&gt;'
+- text: '&lt;T extends A&gt;'
+files:
+- name: src/Task.java
+  visible: true
+  text: |
+    // You can experiment here, it won’t be checked
+
+    public class Task {
+      public static void main(String[] args) {
+        // put your code here
+      }
+    }
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/8217#comment
+status: Solved
+record: -1

@@ -5,7 +5,11 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Vertex extends JPanel {
     private static final int DIFF_X = 25;
@@ -16,13 +20,15 @@ public class Vertex extends JPanel {
 
     private final JLabel label = new JLabel();
 
-    private final Set<Vertex> connectedVertices = new HashSet<>();
+    private final Map<Integer, Vertex> connectedVertices = new TreeMap<>();
 
     private int centerX;
     private int centerY;
     private char id;
     private static final Color DEFAULT_COLOR = Color.WHITE;
     private Color color = DEFAULT_COLOR;
+
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
 
     // private final int diffX = 734;  // for corner vertices apply x = (i % 2) * diffX
@@ -60,6 +66,29 @@ public class Vertex extends JPanel {
                     case ADD_VERTEX, NONE_MODE, REMOVE_EDGE -> highlight();
                     case ADD_EDGE -> createEdge();
                     case REMOVE_VERTEX -> removeVertex();
+                    case DFS_ALGORITHM -> {
+                        mainFrame.setResultLabelText("Please wait...");
+                        executor.submit(() -> {
+                            try {
+                                Thread.sleep(5000);
+                                mainFrame.setResultLabelText(new DepthFirstSearch(Vertex.this).search());
+                            } catch (InterruptedException ex) {
+                                System.out.println(ex.getMessage());
+                            }
+
+                        });
+                    }
+                    case BFS_ALGORITHM -> {
+                        mainFrame.setResultLabelText("Please wait...");
+                        executor.submit(() -> {
+                            try {
+                                Thread.sleep(5000);
+                                mainFrame.setResultLabelText(new BreadthFirstSearch(Vertex.this).search());
+                            } catch (InterruptedException ex) {
+                                System.out.println(ex.getMessage());
+                            }
+                        });
+                    }
                 }
             }
         });
@@ -86,12 +115,12 @@ public class Vertex extends JPanel {
         mainFrame.getGraph().removeVertex(this);
     }
 
-    void connectVertex(Vertex vertex) {
-        connectedVertices.add(vertex);
+    void connectVertex(Vertex vertex, int weight) {
+        connectedVertices.put(weight, vertex);
     }
 
     void disconnectVertex(Vertex vertex) {
-        connectedVertices.removeIf(v -> v == vertex);
+        connectedVertices.remove(vertex);
     }
 
     // setters
@@ -120,7 +149,7 @@ public class Vertex extends JPanel {
         return id;
     }
 
-    Set<Vertex> getConnectedVertices() {
+    Map<Integer, Vertex> getConnectedVertices() {
         return connectedVertices;
     }
 

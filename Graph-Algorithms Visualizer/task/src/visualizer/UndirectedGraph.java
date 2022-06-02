@@ -188,4 +188,8 @@ public class UndirectedGraph extends JPanel {
     public Set<JLabel> getWeightLabels() {
         return weightLabels;
     }
+
+    public Set<Vertex> getVertices() {
+        return vertices;
+    }
 }

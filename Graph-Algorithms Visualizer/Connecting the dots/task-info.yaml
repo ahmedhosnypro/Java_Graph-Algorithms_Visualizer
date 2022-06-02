@@ -92,6 +92,21 @@ files:
         }
     }
   learner_created: true
+- name: src/visualizer/DefaultMenuBar.java
+  visible: true
+  learner_created: true
+- name: src/visualizer/UndirectedEdgeCreator.java
+  visible: true
+  learner_created: true
+- name: src/visualizer/Mode.java
+  visible: true
+  learner_created: true
+- name: src/visualizer/UndirectedGraph.java
+  visible: true
+  learner_created: true
+- name: src/visualizer/UndirectedEdge.java
+  visible: true
+  learner_created: true
 - name: test/ConnectingTheDotsTests.java
   visible: false
   text: |
@@ -679,21 +694,6 @@ files:
         }
     }
   learner_created: false
-- name: src/visualizer/DefaultMenuBar.java
-  visible: true
-  learner_created: true
-- name: src/visualizer/UndirectedEdgeCreator.java
-  visible: true
-  learner_created: true
-- name: src/visualizer/Mode.java
-  visible: true
-  learner_created: true
-- name: src/visualizer/UndirectedGraph.java
-  visible: true
-  learner_created: true
-- name: src/visualizer/UndirectedEdge.java
-  visible: true
-  learner_created: true
 feedback_link: https://hyperskill.org/learn/step/15626#comment
 status: Solved
 feedback:

@@ -17,6 +17,8 @@ public class UndirectedEdge extends JComponent {
         nodes[1] = sndNode;
         this.weight = weight;
 
+        fstNode.connectVertex(sndNode, weight);
+
         setName(String.format("Edge <%c -> %c>", fstNode.getId(), sndNode.getId()));
 
         weightLabel.setFont(new Font("Arial", Font.BOLD, 20));

@@ -5,7 +5,9 @@ public enum Mode {
     ADD_EDGE("Add an Edge"),
     REMOVE_VERTEX("Remove a Vertex"),
     REMOVE_EDGE("Remove an Edge"),
-    NONE_MODE("None");
+    NONE_MODE("None"),
+    DFS_ALGORITHM("Depth-First Search"),
+    BFS_ALGORITHM("Breadth-First Search");
 
     private final String name;
 
